@@ -6,15 +6,15 @@ import Link from "next/link";
 import projects from "@/data/projects.json";
 
 export const metadata: Metadata = {
-  title: "Projects",
-  description: "최성우가 진행한 프로젝트 목록입니다.",
+  title: "Development",
+  description: "최성우가 진행한 개발 프로젝트 목록입니다.",
   openGraph: {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
-    title: `Projects | ${siteConfig.name}`,
-    description: "최성우가 진행한 프로젝트 목록입니다.",
-    url: `${siteConfig.url}/projects`,
+    title: `Development | ${siteConfig.name}`,
+    description: "최성우가 진행한 개발 프로젝트 목록입니다.",
+    url: `${siteConfig.url}/work/dev`,
   },
 };
 

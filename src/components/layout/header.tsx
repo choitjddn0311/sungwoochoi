@@ -17,8 +17,7 @@ const Header = ({ locale }: { locale: string }) => {
 
     const headerMenu = [
         { label: t("home"), href: "/", match: (p: string) => p === "/" },
-        // 2단계에서 /work 페이지가 생기면 주소를 /work로 바꾼다.
-        { label: t("work"), href: "/projects", match: (p: string) => p.startsWith("/work") || p.startsWith("/projects") },
+        { label: t("work"), href: "/work", match: (p: string) => p.startsWith("/work") },
         { label: t("posts"), href: "/posts", match: (p: string) => p.startsWith("/posts") },
         { label: t("about"), href: "/about", match: (p: string) => p.startsWith("/about") },
     ];

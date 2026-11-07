@@ -112,7 +112,7 @@
   },
   "projects": {
     "github": "GitHub",
-    "demo": "Link",
+    "demo": "Demo",
     "noProjects": "No projects yet."
   },
   "widget": {
@@ -128,5 +128,16 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "mainNav": "Main menu"
+  },
+  "work": {
+    "navLabel": "Work sections",
+    "overview": "Work",
+    "dev": "Development",
+    "media": "Photo & Video",
+    "photo": "Photo",
+    "film": "Film",
+    "photoEmpty": "Selecting photos.",
+    "filmEmpty": "Preparing films.",
+    "emptyHint": "New work will appear here soon."
   }
 }
