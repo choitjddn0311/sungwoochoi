@@ -120,13 +120,6 @@
     "demo": "Demo",
     "noProjects": "No projects yet."
   },
-  "widget": {
-    "title": "Recent Posts",
-    "viewAll": "View all posts →",
-    "expand": "Expand",
-    "minimize": "Collapse",
-    "close": "Close"
-  },
   "a11y": {
     "changeTheme": "Change theme. Current: {current}",
     "themeDark": "dark",

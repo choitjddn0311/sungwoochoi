@@ -120,13 +120,6 @@
     "demo": "데모",
     "noProjects": "등록된 프로젝트가 없습니다."
   },
-  "widget": {
-    "title": "최신 글",
-    "viewAll": "전체 글 보기 →",
-    "expand": "펼치기",
-    "minimize": "접기",
-    "close": "닫기"
-  },
   "a11y": {
     "changeTheme": "테마 변경. 현재 설정: {current}",
     "themeDark": "다크",
