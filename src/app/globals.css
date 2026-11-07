@@ -282,10 +282,14 @@ body {
 
   /* 프레임 띠 */
   .strip {
+    /* 선택된 프레임의 폭. 띠의 높이를 이 프레임에 맞춰 고정해서 넘길 때 아래 내용이 움직이지 않게 한다. */
+    --frame-selected: clamp(220px, calc(var(--u) * 25), 480px);
+    height: calc(var(--frame-selected) * 4 / 3);
     display: flex;
     align-items: center;
     gap: 10px;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
     position: relative;
@@ -337,7 +341,7 @@ body {
   }
 
   .frame[data-selected="true"] {
-    width: clamp(220px, calc(var(--u) * 25), 480px);
+    width: var(--frame-selected);
   }
 
   .frame[data-selected="true"] .frame-title {
@@ -367,12 +371,16 @@ body {
     filter: none;
   }
 
+  .strip-large {
+    --frame-selected: clamp(230px, calc(var(--u) * 38), 730px);
+  }
+
   .strip-large .frame {
     width: clamp(110px, calc(var(--u) * 14), 270px);
   }
 
   .strip-large .frame[data-selected="true"] {
-    width: clamp(230px, calc(var(--u) * 38), 730px);
+    width: var(--frame-selected);
   }
 
   .round-button {
@@ -457,20 +465,25 @@ body {
     align-self: flex-start;
   }
 
-  .frame {
-    width: 48vw;
+  .strip {
+    --frame-selected: 68vw;
   }
 
-  .frame[data-selected="true"] {
-    width: 68vw;
+  .strip-large {
+    --frame-selected: 78vw;
+  }
+
+  .frame {
+    width: 48vw;
   }
 
   .strip-large .frame {
     width: 36vw;
   }
 
+  .frame[data-selected="true"],
   .strip-large .frame[data-selected="true"] {
-    width: 78vw;
+    width: var(--frame-selected);
   }
 }
 
