@@ -1,67 +1,111 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import ThemeToggle from "../common/themeToggle";
 import LanguageToggle from "../common/LanguageToggle";
-import { useTranslations } from "next-intl";
+
+const MENU_ID = "mobile-menu";
 
 const Header = ({ locale }: { locale: string }) => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const pathname = usePathname();
     const t = useTranslations("nav");
+    const a = useTranslations("a11y");
 
     const headerMenu = [
-        { label: t("home"), href: "/" },
-        { label: t("posts"), href: "/posts" },
-        { label: t("projects"), href: "/projects" },
-        { label: t("about"), href: "/about" }
+        { label: t("home"), href: "/", match: (p: string) => p === "/" },
+        // 2단계에서 /work 페이지가 생기면 주소를 /work로 바꾼다.
+        { label: t("work"), href: "/projects", match: (p: string) => p.startsWith("/work") || p.startsWith("/projects") },
+        { label: t("posts"), href: "/posts", match: (p: string) => p.startsWith("/posts") },
+        { label: t("about"), href: "/about", match: (p: string) => p.startsWith("/about") },
     ];
 
+    // 전체 화면 메뉴가 열린 동안 Esc로 닫고 뒤쪽 페이지 스크롤을 막는다.
+    useEffect(() => {
+        if (!menuOpen) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setMenuOpen(false);
+        };
+        document.addEventListener("keydown", onKeyDown);
+        document.documentElement.style.overflow = "hidden";
+        return () => {
+            document.removeEventListener("keydown", onKeyDown);
+            document.documentElement.style.overflow = "";
+        };
+    }, [menuOpen]);
+
     return (
-        <header className="w-full h-20 2xl:h-25 xl:h-25 lg:h-25 md:h-25 sm:h-20 flex justify-center sticky top-0 z-10 bg-background text-foreground">
-            <div className="w-full sm:w-150 md:w-200 lg:w-250 xl:w-300 flex justify-between items-center px-5 sm:px-0">
-                <Link href="/" className="h-full content-center font-bold text-2xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-4xl text-cyan-400">
-                    <h1>S<sub className="text-s">ung</sub>W<sub className="text-s">oo</sub> dev</h1>
+        <header className="sticky top-0 z-40 w-full bg-background text-foreground">
+            <div className="wrap flex items-center justify-between gap-6 meta">
+                <Link href="/" className="tap tap-start" onClick={() => setMenuOpen(false)}>
+                    SUNGWOO CHOI
                 </Link>
 
-                <div className="h-full flex items-center gap-3 2xl:gap-6 xl:gap-6 lg:gap-6 md:gap-6 sm:gap-6">
-                    {/* 햄버거 버튼: 모바일(0~639px)에서만 표시 */}
-                    <button
-                        className="sm:hidden flex flex-col justify-center gap-0.75 w-8 h-8"
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        aria-label="메뉴 열기"
-                    >
-                        <span className={`block h-0.75 w-5 rounded-full bg-current transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-1.5" : ""}`}/>
-                        <span className={`block h-0.75 w-5 rounded-full bg-current transition-all duration-150 ${menuOpen ? "opacity-0" : ""}`}/>
-                        <span className={`block h-0.75 w-5 rounded-full bg-current transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}/>
-                    </button>
-
-                    {/* 일반 nav: sm(640px) 이상에서만 표시 */}
-                    <nav className="hidden sm:flex">
-                        <ul className="flex gap-10 items-center">
-                            {headerMenu.map((item, index) => (
-                                <li key={index} className="font-semibold">
-                                    <Link href={item.href}>{item.label}</Link>
-                                </li>
-                            ))}
+                <div className="flex items-center gap-1 sm:gap-4">
+                    <nav aria-label={a("mainNav")} className="hidden sm:block">
+                        <ul className="flex items-center gap-4">
+                            {headerMenu.map((item) => {
+                                const active = item.match(pathname);
+                                return (
+                                    <li key={item.label}>
+                                        <Link
+                                            href={item.href}
+                                            aria-current={active ? "page" : undefined}
+                                            className={`tap transition-colors duration-150 hover:text-foreground ${active ? "text-foreground" : "text-muted"}`}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </nav>
 
                     <LanguageToggle currentLocale={locale} />
                     <ThemeToggle />
+
+                    <button
+                        type="button"
+                        className="tap sm:hidden"
+                        onClick={() => setMenuOpen((open) => !open)}
+                        aria-expanded={menuOpen}
+                        aria-controls={MENU_ID}
+                        aria-label={menuOpen ? a("closeMenu") : a("openMenu")}
+                    >
+                        <span aria-hidden="true" className="relative block h-3 w-6">
+                            <span className={`absolute left-0 h-px w-6 bg-current transition-transform duration-200 ${menuOpen ? "top-1.5 rotate-45" : "top-0"}`} />
+                            <span className={`absolute left-0 h-px w-6 bg-current transition-transform duration-200 ${menuOpen ? "top-1.5 -rotate-45" : "top-3"}`} />
+                        </span>
+                    </button>
                 </div>
             </div>
 
-            {/* 모바일 드롭다운 메뉴 */}
+            {/* 모바일 전체 화면 메뉴 */}
             {menuOpen && (
-                <nav className="sm:hidden absolute top-20 left-0 w-full bg-background shadow-md">
-                    <ul className="flex flex-col items-center gap-6 py-6 bg-background text-foreground">
-                        {headerMenu.map((item, index) => (
-                            <li key={index} className="font-semibold w-full flex justify-center items-center">
-                                <Link href={item.href} onClick={() => setMenuOpen(false)}>
-                                    {item.label}
-                                </Link>
-                            </li>
-                        ))}
+                <nav
+                    id={MENU_ID}
+                    aria-label={a("mainNav")}
+                    className="fixed inset-x-0 top-11 bottom-0 z-40 overflow-y-auto bg-background sm:hidden"
+                >
+                    <ul className="wrap flex flex-col pt-6">
+                        {headerMenu.map((item) => {
+                            const active = item.match(pathname);
+                            return (
+                                <li key={item.label} className="border-t border-line">
+                                    <Link
+                                        href={item.href}
+                                        aria-current={active ? "page" : undefined}
+                                        onClick={() => setMenuOpen(false)}
+                                        className={`display block py-4 text-[clamp(44px,14vw,72px)] ${active ? "text-foreground" : "text-muted"}`}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </nav>
             )}

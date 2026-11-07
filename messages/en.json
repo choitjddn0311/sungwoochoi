@@ -1,13 +1,13 @@
 {
   "nav": {
     "home": "home",
+    "work": "work",
     "posts": "posts",
-    "projects": "projects",
     "about": "about me"
   },
   "footer": {
     "rights": "©2026 choitjddn0311. All rights reserved.",
-    "developer": "developer: Sungwoo Choi(최성우)"
+    "roles": "developer / photographer / videographer"
   },
   "home": {
     "greeting": "Hello! I'm",
@@ -118,5 +118,15 @@
   "widget": {
     "title": "Recent Posts",
     "viewAll": "View all posts →"
+  },
+  "a11y": {
+    "changeTheme": "Change theme. Current: {current}",
+    "themeDark": "dark",
+    "themeLight": "light",
+    "themeSystem": "system",
+    "switchLanguage": "한국어로 보기",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mainNav": "Main menu"
   }
 }
