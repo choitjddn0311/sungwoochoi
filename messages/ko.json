@@ -113,7 +113,8 @@
     "t2023_1": "웹 디자인 및 개발 기능반 입부",
     "t2023_2": "인평자동차고등학교 자동차it과 입학",
     "heroPhotoAlt": "바닷가 절벽 앞 바위 위에서 두 팔을 벌리고 선 최성우",
-    "cameraPhotoAlt": "카메라를 들고 있는 최성우의 흑백 사진"
+    "cameraPhotoAlt": "카메라를 들고 있는 최성우의 흑백 사진",
+    "mottoLabel": "나를 설명하는 내 인생의 모토"
   },
   "projects": {
     "github": "GitHub",

@@ -28,7 +28,6 @@
   --font-sans: var(--ff-latin), var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
   --font-latin: var(--ff-latin), "Helvetica Neue", Arial, sans-serif;
   --font-kr: var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
-  --font-note: var(--ff-note), var(--ff-kr), cursive;
 }
 
 html {
@@ -77,14 +76,6 @@ body {
     font-weight: 200;
     letter-spacing: -0.05em;
     line-height: 1;
-  }
-
-  /* 손글씨 메모: 페이지당 한 번 정도만 쓴다 */
-  .note {
-    font-family: var(--font-note);
-    font-size: clamp(19px, 2vw, 27px);
-    line-height: 1.2;
-    transform: rotate(-2deg);
   }
 
   /* 터치 영역 44px을 확보하는 작은 링크와 버튼 */
@@ -274,12 +265,6 @@ body {
     top: calc(clamp(28px, calc(var(--u) * 6), 84px) + var(--u) * 16);
   }
 
-  .hero-note {
-    position: absolute;
-    right: var(--gut);
-    bottom: clamp(40px, calc(var(--u) * 7), 100px);
-  }
-
   /* 프레임 띠 */
   .strip {
     /* 선택된 프레임의 폭. 띠의 높이를 이 프레임에 맞춰 고정해서 넘길 때 아래 내용이 움직이지 않게 한다. */
@@ -438,8 +423,7 @@ body {
 
   .hero-p1,
   .hero-p2,
-  .hero-meta,
-  .hero-note {
+  .hero-meta {
     position: relative;
     inset: auto;
   }
@@ -458,11 +442,6 @@ body {
 
   .hero-meta {
     order: 4;
-  }
-
-  .hero-note {
-    order: 5;
-    align-self: flex-start;
   }
 
   .strip {
@@ -783,6 +762,12 @@ body {
     font-size: clamp(24px, calc(var(--u) * 3), 58px);
     line-height: 1.3;
     letter-spacing: -0.03em;
+  }
+
+  .about-motto {
+    font-size: clamp(40px, calc(var(--u) * 6), 115px);
+    line-height: 1;
+    text-wrap: balance;
   }
 
   .about-year {

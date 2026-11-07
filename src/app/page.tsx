@@ -108,7 +108,6 @@ const Home = async () => {
               <li key={role}>{role}</li>
             ))}
           </ul>
-          <p className="hero-note note">make life what i dream!</p>
         </div>
       </section>
 

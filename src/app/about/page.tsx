@@ -55,11 +55,15 @@ const About = async () => {
             <span>developer / photographer / videographer</span>
             <span>{t("heroSubtitle")}</span>
           </div>
-          <p className="note">make life what i dream!</p>
         </div>
       </section>
 
       <div className="wrap">
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("mottoLabel")}</h2>
+          <p className="display about-motto">make life what i dream!</p>
+        </section>
+
         <section className="about-row">
           <h2 className="meta text-muted">{t("aboutMe")}</h2>
           <div>
