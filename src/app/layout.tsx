@@ -1,7 +1,7 @@
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { Griun, InterTight, PlexSansKR } from "@/fonts/fonts"
+import { Griun, InterTight, NotoSansKR } from "@/fonts/fonts"
 import Theme from "@/_provider/themeProvider";
 import { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
@@ -62,7 +62,7 @@ export default async function RootLayout({
   return (
       <html
         lang={locale}
-        className={`${InterTight.variable} ${PlexSansKR.variable} ${Griun.variable}`}
+        className={`${InterTight.variable} ${NotoSansKR.variable} ${Griun.variable}`}
         suppressHydrationWarning
       >
         <body>
