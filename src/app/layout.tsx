@@ -1,7 +1,7 @@
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { Griun } from "@/fonts/fonts"
+import { Griun, InterTight, NotoSansKR } from "@/fonts/fonts"
 import Theme from "@/_provider/themeProvider";
 import { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
@@ -60,8 +60,12 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-      <html lang={locale} suppressHydrationWarning>
-        <body className={Griun.className}>
+      <html
+        lang={locale}
+        className={`${InterTight.variable} ${NotoSansKR.variable} ${Griun.variable}`}
+        suppressHydrationWarning
+      >
+        <body>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Theme>
               <Header locale={locale} />

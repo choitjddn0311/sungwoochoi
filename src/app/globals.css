@@ -1,30 +1,166 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark*));
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* Contact Sheet 디자인 토큰: 색은 여기서만 정의하고 컴포넌트에서는 토큰 이름으로 사용한다. */
 :root {
-  --font-griun: 'Griun';
-  --background: #fafafa;
-  --foreground: #2c2c2c;
-  --maincolor: #22D3EE;
+  --background: #ffffff;
+  --foreground: #000000;
+  --muted: #595959;
+  --line: #d9d9d9;
+  --surface: #f2f2f2;
+  --maincolor: var(--foreground);
 }
 
 .dark {
-  --background: #1a1a1a;
-  --foreground: #fafafa;
-  --maincolor: #22D3EE;
+  --background: #000000;
+  --foreground: #ffffff;
+  --muted: #a3a3a3;
+  --line: #2e2e2e;
+  --surface: #111111;
 }
 
-@theme {
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
   --color-maincolor: var(--maincolor);
-  --font-griun: 'Griun';
+  --font-sans: var(--ff-latin), var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
+  --font-latin: var(--ff-latin), "Helvetica Neue", Arial, sans-serif;
+  --font-kr: var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
+  --font-note: var(--ff-note), var(--ff-kr), cursive;
+}
+
+html {
+  overflow-x: clip;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-griun), sans-serif;
+  font-family: var(--font-sans);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  overflow-x: clip;
 }
 
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+@layer components {
+  /* 페이지 공통 폭과 좌우 여백 */
+  .wrap {
+    width: 100%;
+    max-width: 1920px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 4vw, 56px);
+  }
+
+  /* 정보성 작은 글자: 13px 아래로 내려가지 않는다 */
+  .meta {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* 대형 글자: 얇은 굵기는 큰 크기에서만 쓴다 */
+  .display {
+    font-family: var(--font-latin);
+    font-weight: 300;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+  }
+
+  .display-kr {
+    font-family: var(--font-kr);
+    font-weight: 200;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  /* 손글씨 메모: 페이지당 한 번 정도만 쓴다 */
+  .note {
+    font-family: var(--font-note);
+    font-size: clamp(19px, 2vw, 27px);
+    line-height: 1.2;
+    transform: rotate(-2deg);
+  }
+
+  /* 터치 영역 44px을 확보하는 작은 링크와 버튼 */
+  .tap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    cursor: pointer;
+  }
+
+  .tap-start {
+    justify-content: flex-start;
+  }
+
+  /* 사진: 기본 흑백, 호버와 포커스에서 원본 색 */
+  .photo {
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .photo img {
+    filter: grayscale(1) contrast(1.05);
+    transition: filter 300ms;
+  }
+
+  .photo:hover img,
+  .photo:focus-within img,
+  .photo[data-selected="true"] img {
+    filter: none;
+  }
+
+  /* 큰 목록 행: 호버하면 흑백 반전 */
+  .invert-row {
+    transition: background-color 200ms, color 200ms, padding 200ms;
+  }
+
+  .invert-row:hover,
+  .invert-row:focus-visible {
+    background: var(--foreground);
+    color: var(--background);
+    padding-inline: 14px;
+  }
+
+  .invert-row:hover .text-muted,
+  .invert-row:focus-visible .text-muted {
+    color: inherit;
+  }
+
+  /* 첫 화면 글자 등장: 한 번만 12px 올라온다 */
+  .rise {
+    animation: rise 400ms ease-out both;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

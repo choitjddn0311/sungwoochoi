@@ -1,17 +1,32 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { siteConfig } from "@/lib/siteConfig";
 
 const Footer = async () => {
     const t = await getTranslations("footer");
 
+    const links = [
+        { label: "Email", href: `mailto:${siteConfig.social.email}` },
+        { label: "GitHub", href: siteConfig.social.github },
+        { label: "Instagram", href: siteConfig.social.instagram },
+    ];
+
     return (
-        <footer className="w-full h-15 2xl:h-25 xl:h-25 lg:h-20 md:h-20 sm:h-15 flex justify-center border-t-1 border-foreground/10 bg-background text-foreground">
-            <div className="w-full sm:w-150 md:w-200 lg:w-250 xl:w-300 2xl:w-300 h-full flex justify-center items-center 2xl:justify-between xl:justify-between lg:justify-between md:justify-between sm:justify-between">
-                <p className="text-sm">{t("rights")}</p>
-                <ul>
-                    <li className="hidden 2xl:block xl:block lg:block md:block sm:block text-sm">
-                        {t("developer")}
-                    </li>
-                </ul>
+        <footer className="w-full bg-background text-muted">
+            <div className="wrap">
+                <div className="meta flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t border-line py-3">
+                    <p>{t("rights")}</p>
+                    <p>{t("roles")}</p>
+                    <ul className="flex gap-4">
+                        {links.map((link) => (
+                            <li key={link.label}>
+                                <Link href={link.href} className="tap transition-colors duration-150 hover:text-foreground">
+                                    {link.label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </footer>
     );
