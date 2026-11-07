@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
 import { getTranslations } from "next-intl/server";
+import PostRow from "./PostRow";
 
 interface RelatedPostsProps {
   posts: PostMeta[];
@@ -11,26 +11,12 @@ const RelatedPosts = async ({ posts }: RelatedPostsProps) => {
   const t = await getTranslations("post");
 
   return (
-    <div className="mt-8 pt-6 border-t border-foreground/10">
-      <p className="text-xs font-semibold text-foreground/40 uppercase tracking-wider mb-4">
-        {t("relatedPosts")}
-      </p>
-      <ul className="flex flex-col gap-3">
-        {posts.map((post) => (
-          <li key={post.slug}>
-            <Link
-              href={`/posts/${post.slug}`}
-              className="group flex flex-col gap-1"
-            >
-              <span className="text-sm font-medium line-clamp-2 group-hover:text-cyan-500 transition-colors leading-snug">
-                {post.title}
-              </span>
-              <time className="text-xs text-foreground/40">{post.date}</time>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <section aria-labelledby="related-title" className="wrap pt-[clamp(48px,7vw,96px)]">
+      <h2 id="related-title" className="meta pb-3.5 text-muted">{t("relatedPosts")}</h2>
+      {posts.map((post) => (
+        <PostRow key={post.slug} post={post} />
+      ))}
+    </section>
   );
 };
 

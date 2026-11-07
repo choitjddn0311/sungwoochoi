@@ -2,12 +2,18 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 
 interface PostsFilterProps {
   tags: { tag: string; count: number }[];
 }
+
+const SEARCH_ID = "posts-search";
+
+const tagClass = (selected: boolean) =>
+  `meta min-h-9 cursor-pointer px-2 transition-colors duration-150 ${
+    selected ? "bg-foreground text-background" : "text-muted hover:text-foreground"
+  }`;
 
 const PostsFilter = ({ tags }: PostsFilterProps) => {
   const t = useTranslations("posts");
@@ -61,61 +67,46 @@ const PostsFilter = ({ tags }: PostsFilterProps) => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+    <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 pb-[clamp(24px,4vw,48px)]">
       {/* 태그 필터 */}
-      <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => handleTagSelect("")}
-          className={`px-3 py-1 rounded-full text-sm transition-colors ${
-            !selectedTag
-              ? "bg-cyan-400 text-white font-semibold"
-              : "border border-foreground/20 text-foreground/60 hover:border-cyan-400 hover:text-cyan-500"
-          }`}
-        >
+      <div role="group" aria-label={t("tagFilter")} className="flex flex-[1_1_320px] flex-wrap gap-x-1.5 gap-y-0.5">
+        <button type="button" onClick={() => handleTagSelect("")} aria-pressed={!selectedTag} className={tagClass(!selectedTag)}>
           {t("allLabel")}
         </button>
         {visibleTags.map(({ tag, count }) => (
           <button
             key={tag}
+            type="button"
             onClick={() => handleTagSelect(tag)}
-            className={`px-3 py-1 rounded-full text-sm transition-colors ${
-              selectedTag === tag
-                ? "bg-cyan-400 text-white font-semibold"
-                : "border border-foreground/20 text-foreground/60 hover:border-cyan-400 hover:text-cyan-500"
-            }`}
+            aria-pressed={selectedTag === tag}
+            className={tagClass(selectedTag === tag)}
           >
-            {tag}
-            <span className="ml-1 text-xs opacity-70">{count}</span>
+            {tag} {count}
           </button>
         ))}
 
         {hasMore && !expanded && (
-          <button
-            onClick={() => setExpanded(true)}
-            className="px-3 py-1 rounded-full text-sm border border-foreground/20 text-foreground/40 hover:border-cyan-400 hover:text-cyan-500 transition-colors"
-          >
+          <button type="button" onClick={() => setExpanded(true)} className={tagClass(false)}>
             {t("showMore", { count: hiddenCount })}
           </button>
         )}
         {expanded && (
-          <button
-            onClick={() => setExpanded(false)}
-            className="px-3 py-1 rounded-full text-sm border border-foreground/20 text-foreground/40 hover:border-cyan-400 hover:text-cyan-500 transition-colors"
-          >
+          <button type="button" onClick={() => setExpanded(false)} className={tagClass(false)}>
             {t("collapse")}
           </button>
         )}
       </div>
 
       {/* 검색창 */}
-      <div className="relative w-full sm:w-72 shrink-0">
-        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-foreground/40" />
+      <div className="flex w-full flex-col gap-0.5 sm:w-72">
+        <label htmlFor={SEARCH_ID} className="meta text-muted">{t("searchLabel")}</label>
         <input
+          id={SEARCH_ID}
           type="search"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="w-full pl-9 pr-4 py-2 rounded-lg border border-foreground/20 bg-background text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-cyan-400 transition-colors"
+          className="w-full border-b border-foreground bg-transparent py-2 text-base text-foreground placeholder:text-muted"
         />
       </div>
     </div>

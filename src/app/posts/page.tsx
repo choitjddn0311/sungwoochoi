@@ -1,26 +1,28 @@
 import { getAllPosts, getTagList } from "@/lib/posts";
-import PostCard from "@/components/posts/postCard";
+import PostRow from "@/components/posts/PostRow";
 import PostsFilter from "@/components/posts/PostsFilter";
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
 import { getTranslations } from "next-intl/server";
+import { padCount } from "@/lib/work";
 
 export const metadata: Metadata = {
   title: "Posts",
-  description: "최성우의 개발 블로그 포스트 목록입니다. Web, Linux, AI 등 다양한 주제를 다룹니다.",
+  description: "최성우의 블로그 글 목록입니다. Web, Linux, AI 등 다양한 주제를 다룹니다.",
   openGraph: {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
     title: `Posts | ${siteConfig.name}`,
-    description: "최성우의 개발 블로그 포스트 목록입니다.",
+    description: "최성우의 블로그 글 목록입니다.",
     url: `${siteConfig.url}/posts`,
   },
 };
 
 const POSTS_PER_PAGE = 12;
+const PAGE_LINK = "tap meta px-2 transition-colors duration-150 hover:text-foreground";
 
 const Posts = async ({ searchParams }: { searchParams: Promise<{ page?: string; q?: string; tag?: string }> }) => {
   const t = await getTranslations("posts");
@@ -53,81 +55,73 @@ const Posts = async ({ searchParams }: { searchParams: Promise<{ page?: string; 
   };
 
   return (
-    <div className="w-full flex justify-center bg-background text-foreground">
-      <div className="w-full sm:w-150 md:w-200 lg:w-250 xl:w-300 2xl:w-300 py-20 px-5 xl:px-0 min-h-165">
-
-        <h1 className="text-2xl 2xl:text-4xl xl:text-4xl lg:text-3xl md:text-3xl sm:text-2xl font-bold mb-6">Posts</h1>
-
-        <Suspense fallback={<div className="h-20 rounded-lg bg-foreground/10 animate-pulse mb-10" />}>
-          <PostsFilter tags={tagList} />
-        </Suspense>
-
-        {allPosts.length === 0 ? (
-          <div className="flex flex-col gap-3 h-100 justify-start">
-            <p className="text-foreground/70">{t("noPostsMessage")}</p>
-            <p className="text-cyan-500 underline"><Link href="/">{t("backToHome")}</Link></p>
-          </div>
-        ) : filteredPosts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-60 gap-3 text-foreground/50">
-            <p className="text-lg">{t("noResultsTitle")}</p>
-            <p className="text-sm text-center">
-              {selectedTag && <><span className="text-cyan-500">#{selectedTag}</span> {t("tagResultPrefix")}{query && " · "}</>}
-              {query && <>&apos;<span className="text-cyan-500">{query}</span>&apos;</>}
-              {" "}{t("noResultsMessage")}
-            </p>
-          </div>
-        ) : (
-          <>
-            {(query || selectedTag) && (
-              <p className="text-sm text-foreground/50 mb-6">
-                {selectedTag && <span className="text-cyan-500 mr-1">#{selectedTag}</span>}
-                {query && <>&apos;<span className="text-cyan-500">{query}</span>&apos; </>}
-                {t("resultCount", { count: filteredPosts.length })}
-              </p>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {posts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
-
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-14">
-                {currentPage > 1 && (
-                  <Link
-                    href={paginationHref(currentPage - 1)}
-                    className="px-4 py-2 rounded-lg border border-foreground/20 text-sm hover:border-cyan-400 hover:text-cyan-500 transition-colors"
-                  >
-                    {t("previous")}
-                  </Link>
-                )}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <Link
-                    key={p}
-                    href={paginationHref(p)}
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm transition-colors ${
-                      p === currentPage
-                        ? "bg-cyan-400 text-white font-semibold"
-                        : "border border-foreground/20 hover:border-cyan-400 hover:text-cyan-500"
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                ))}
-                {currentPage < totalPages && (
-                  <Link
-                    href={paginationHref(currentPage + 1)}
-                    className="px-4 py-2 rounded-lg border border-foreground/20 text-sm hover:border-cyan-400 hover:text-cyan-500 transition-colors"
-                  >
-                    {t("next")}
-                  </Link>
-                )}
-              </div>
-            )}
-          </>
-        )}
+    <div className="wrap">
+      <div className="flex items-baseline justify-between gap-4 pt-[clamp(24px,5vw,64px)] pb-[clamp(20px,3vw,40px)]">
+        <span className="display page-title">{padCount(allPosts.length)}</span>
+        <h1 className="display page-title">POSTS</h1>
       </div>
+
+      <Suspense fallback={<div className="mb-10 h-20 animate-pulse bg-surface" />}>
+        <PostsFilter tags={tagList} />
+      </Suspense>
+
+      {allPosts.length === 0 ? (
+        <div className="flex flex-col gap-3 py-16">
+          <p className="text-muted">{t("noPostsMessage")}</p>
+          <p className="underline underline-offset-4"><Link href="/">{t("backToHome")}</Link></p>
+        </div>
+      ) : filteredPosts.length === 0 ? (
+        <div className="flex flex-col gap-3 border-t border-line py-[clamp(32px,6vw,84px)]">
+          <p className="display-kr text-[clamp(30px,5vw,68px)]">{t("noResultsTitle")}</p>
+          <p className="meta text-muted">
+            {selectedTag && <>#{selectedTag} {t("tagResultPrefix")}{query && " · "}</>}
+            {query && <>&apos;{query}&apos;</>}
+            {" "}{t("noResultsMessage")}
+          </p>
+        </div>
+      ) : (
+        <>
+          {(query || selectedTag) && (
+            <p className="meta pb-4 text-muted" aria-live="polite">
+              {selectedTag && <span className="mr-1">#{selectedTag}</span>}
+              {query && <>&apos;{query}&apos; </>}
+              {t("resultCount", { count: filteredPosts.length })}
+            </p>
+          )}
+
+          <div>
+            {posts.map((post) => (
+              <PostRow key={post.slug} post={post} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <nav aria-label={t("pagination")} className="flex flex-wrap items-center justify-center gap-1 border-t border-line pt-6">
+              {currentPage > 1 && (
+                <Link href={paginationHref(currentPage - 1)} className={`${PAGE_LINK} text-muted`}>
+                  {t("previous")}
+                </Link>
+              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <Link
+                  key={p}
+                  href={paginationHref(p)}
+                  aria-current={p === currentPage ? "page" : undefined}
+                  className={p === currentPage ? "tap meta bg-foreground text-background" : `${PAGE_LINK} text-muted`}
+                >
+                  {p}
+                </Link>
+              ))}
+              {currentPage < totalPages && (
+                <Link href={paginationHref(currentPage + 1)} className={`${PAGE_LINK} text-muted`}>
+                  {t("next")}
+                </Link>
+              )}
+            </nav>
+          )}
+        </>
+      )}
+      <div className="gap-l" />
     </div>
   );
 };

@@ -3,204 +3,124 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
 import { getTranslations } from "next-intl/server";
-import type { ReactNode } from "react";
-import {
-  FaGithub, FaInstagram,
-  FaGraduationCap, FaMedal, FaCertificate,
-  FaBriefcase, FaLaptopCode, FaSchool,
-  FaBullseye, FaRocket, FaDesktop, FaCamera,
-} from "react-icons/fa";
-import { MdOutlineEmail } from "react-icons/md";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "개발자 최성우를 소개합니다. Web, AI 분야에 관심이 있으며 사진·영상도 즐기는 개발자입니다.",
+  description: "개발하고, 사진과 영상을 찍는 최성우를 소개합니다.",
   openGraph: {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
     title: `About | ${siteConfig.name}`,
-    description: "개발자 최성우를 소개합니다.",
+    description: "개발하고, 사진과 영상을 찍는 최성우를 소개합니다.",
     url: `${siteConfig.url}/about`,
   },
 };
 
-const SectionHeader = ({ title }: { title: string }) => (
-  <div className="flex items-center gap-3 mb-10">
-    <div className="w-6 h-0.5 bg-cyan-400 shrink-0" />
-    <h2 className="text-xl md:text-2xl font-bold whitespace-nowrap">{title}</h2>
-    <div className="h-px flex-1 bg-foreground/10" />
-  </div>
-);
+const HASH_TAGS = ["developer", "photographer", "videographer", "travel the world", "do my dream"];
 
 const About = async () => {
   const t = await getTranslations("about");
-  const hashTags = [
-    "developer",
-    "photographer",
-    "videographer",
-    "travel the world",
-    "do my dream",
+  const h = await getTranslations("home");
+
+  // 연대기 내용은 messages/{ko,en}.json의 about.t{연도}_{순서}에서 수정한다.
+  const timeline = [
+    { year: "2026", items: [t("t2026_1")] },
+    { year: "2025", items: [t("t2025_1"), t("t2025_2"), t("t2025_3"), t("t2025_4"), t("t2025_5"), t("t2025_6")] },
+    { year: "2024", items: [t("t2024_1"), t("t2024_2")] },
+    { year: "2023", items: [t("t2023_1"), t("t2023_2")] },
   ];
 
-  // ✏️ 연대기 내용을 여기서 수정하세요
-  const timeline: { year: string; items: { icon: ReactNode; text: string }[] }[] = [
-    {
-      year: "2026",
-      items: [
-        { icon: <FaGraduationCap />, text: t("t2026_1") },
-      ],
-    },
-    {
-      year: "2025",
-      items: [
-        { icon: <FaMedal />, text: t("t2025_1") },
-        { icon: <FaMedal />, text: t("t2025_2") },
-        { icon: <FaCertificate />, text: t("t2025_3") },
-        { icon: <FaMedal />, text: t("t2025_4") },
-        { icon: <FaCertificate />, text: t("t2025_5") },
-        { icon: <FaCertificate />, text: t("t2025_6") },
-      ],
-    },
-    {
-      year: "2024",
-      items: [
-        { icon: <FaBriefcase />, text: t("t2024_1") },
-        { icon: <FaMedal />, text: t("t2024_2") },
-      ],
-    },
-    {
-      year: "2023",
-      items: [
-        { icon: <FaLaptopCode />, text: t("t2023_1") },
-        { icon: <FaSchool />, text: t("t2023_2") },
-      ],
-    },
-  ];
-
-  // ✏️ 목표 내용을 여기서 수정하세요
-  const goals: { icon: ReactNode; title: string; description: string }[] = [
-    {
-      icon: <FaBullseye />,
-      title: t("goal1Title"),
-      description: t("goal1Desc"),
-    },
-    {
-      icon: <FaRocket />,
-      title: t("goal2Title"),
-      description: t("goal2Desc"),
-    },
+  const contacts = [
+    { label: "Email", value: siteConfig.social.email, href: `mailto:${siteConfig.social.email}` },
+    { label: "GitHub", value: "choitjddn0311", href: siteConfig.social.github },
+    { label: "Instagram", value: "choitjddn31", href: siteConfig.social.instagram },
   ];
 
   return (
-    <div className="bg-background text-foreground w-full flex flex-col items-center">
-      <div className="w-full sm:w-150 md:w-200 lg:w-250 xl:w-300 2xl:w-300 px-5 xl:px-0 flex flex-col gap-20 py-20">
-
-        {/* ── Hero ── */}
-        <section className="flex flex-col items-center text-center gap-6 py-6">
-          <div className="relative w-36 h-36 md:w-48 md:h-48 shrink-0">
-            <Image
-              src="/img/about_profile.jpg"
-              alt="profile"
-              fill
-              className="rounded-full object-cover"
-            />
+    <>
+      <section className="about-hero">
+        <figure className="about-photo">
+          <Image src="/img/about_profile.jpg" alt={t("heroPhotoAlt")} fill priority sizes="(max-width: 680px) 83vw, 33vw" className="object-cover" />
+        </figure>
+        <figure className="about-photo-2 photo">
+          <Image src="/img/profile2.jpg" alt={t("cameraPhotoAlt")} fill sizes="16vw" className="object-cover" />
+        </figure>
+        <h1 className="about-name">
+          <span className="about-name-kr display-kr">최성우</span>
+          <span className="about-name-en display">SUNGWOO CHOI</span>
+        </h1>
+        <div className="about-low">
+          <div className="meta flex flex-col gap-1 text-muted">
+            <span>developer / photographer / videographer</span>
+            <span>{t("heroSubtitle")}</span>
           </div>
+          <p className="note">make life what i dream!</p>
+        </div>
+      </section>
 
-          <div className="flex flex-col items-center gap-1">
-            <h1 className="text-4xl md:text-5xl font-bold">{t("profileName")}</h1>
-            <p className="text-foreground/50 text-base md:text-lg">{t("profileNameSub")}</p>
-          </div>
-
-          <p className="text-lg md:text-xl">
-            Make{" "}
-            <span className="text-cyan-500 font-semibold">life</span>{" "}
-            what i{" "}
-            <span className="text-cyan-500 font-semibold">dream!</span>
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-2">
-            {hashTags.map((tag, i) => (
-              <span
-                key={i}
-                className={`text-sm px-3 py-1 rounded-full border ${
-                  i % 2 === 0
-                    ? "border-cyan-400/60 text-cyan-500"
-                    : "border-foreground/15 text-foreground/50"
-                }`}
-              >
-                #{tag}
-              </span>
-            ))}
+      <div className="wrap">
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("aboutMe")}</h2>
+          <div>
+            <p className="about-lead">{t("aboutMeContent1")}</p>
+            <p className="max-w-160 pt-3.5 leading-[1.75]">{t("aboutMeContent2")}</p>
+            <p className="meta flex flex-wrap gap-x-3 pt-3.5 text-muted">
+              {HASH_TAGS.map((tag) => (
+                <span key={tag}>#{tag}</span>
+              ))}
+            </p>
           </div>
         </section>
 
-        {/* ── About Me ── */}
-        <section>
-          <SectionHeader title={t("aboutMe")} />
-          {/* ✏️ 자기소개 내용을 여기서 수정하세요 */}
-          <div className="text-foreground/70 leading-relaxed text-base md:text-lg space-y-4 max-w-2xl">
-            <p>{t("aboutMeContent1")}</p>
-            <p>{t("aboutMeContent2")}</p>
-          </div>
-        </section>
-
-        {/* ── What I Love ── */}
-        <section>
-          <SectionHeader title={t("whatILove")} />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* ✏️ 카드 내용을 여기서 수정하세요 */}
-            <div className="p-6 rounded-xl border border-foreground/10 hover:border-cyan-400/50 transition-colors">
-              <FaDesktop className="text-3xl mb-4 text-foreground/60" />
-              <h3 className="text-lg font-bold mb-3">{t("devTitle")}</h3>
-              <p className="text-sm text-foreground/60 leading-relaxed">{t("devContent")}</p>
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("whatILove")}</h2>
+          <div className="grid grid-cols-1 gap-6 min-[681px]:grid-cols-2">
+            <div>
+              <h3 className="pb-1.5 text-lg">{t("devTitle")}</h3>
+              <p className="leading-[1.75] text-muted">{t("devContent")}</p>
             </div>
-            <div className="p-6 rounded-xl border border-foreground/10 hover:border-cyan-400/50 transition-colors">
-              <FaCamera className="text-3xl mb-4 text-foreground/60" />
-              <h3 className="text-lg font-bold mb-3">{t("photoTitle")}</h3>
-              <p className="text-sm text-foreground/60 leading-relaxed">{t("photoContent")}</p>
+            <div>
+              <h3 className="pb-1.5 text-lg">{t("photoTitle")}</h3>
+              <p className="leading-[1.75] text-muted">{t("photoContent")}</p>
             </div>
           </div>
         </section>
 
-        {/* ── 나의 목표 ── */}
-        <section>
-          <SectionHeader title={t("myGoals")} />
-          <div className="flex flex-col gap-4">
-            {goals.map((goal, i) => (
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("myGoals")}</h2>
+          <div className="grid grid-cols-1 gap-6 min-[681px]:grid-cols-2">
+            <div>
+              <h3 className="pb-1.5 text-lg">{t("goal1Title")}</h3>
+              <p className="leading-[1.75] text-muted">{t("goal1Desc")}</p>
+            </div>
+            <div>
+              <h3 className="pb-1.5 text-lg">{t("goal2Title")}</h3>
+              <p className="leading-[1.75] text-muted">{t("goal2Desc")}</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-row">
+          <h2 className="meta text-muted">{h("affiliation")} · {h("career")}</h2>
+          <div className="flex flex-col gap-2 leading-[1.75]">
+            <p>{h("affiliationText")}</p>
+            <p>{h("careerText")}</p>
+          </div>
+        </section>
+
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("timeline")}</h2>
+          <div>
+            {timeline.map((group) => (
               <div
-                key={i}
-                className="flex items-start gap-5 p-5 rounded-xl border border-foreground/10 hover:border-cyan-400/50 transition-colors"
+                key={group.year}
+                className="grid grid-cols-1 gap-x-6 gap-y-2 border-t border-line py-4 first:border-t-0 first:pt-0 min-[681px]:grid-cols-[3fr_5fr]"
               >
-                <span className="text-2xl shrink-0 mt-0.5 text-cyan-500">{goal.icon}</span>
-                <div>
-                  <h3 className="font-semibold mb-1">{goal.title}</h3>
-                  <p className="text-sm text-foreground/60 leading-relaxed">{goal.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── 나의 연대기 ── */}
-        <section>
-          <SectionHeader title={t("timeline")} />
-          <div className="relative pl-8 border-l-2 border-foreground/10">
-            {timeline.map((group, gi) => (
-              <div key={gi} className="relative mb-10 last:mb-0">
-                {/* 타임라인 점 */}
-                <div className="absolute -left-[45px] w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-background" />
-                </div>
-
-                <time className="text-foreground font-bold text-lg">{group.year}</time>
-
-                <ul className="mt-3 flex flex-col gap-2">
-                  {group.items.map((item, ii) => (
-                    <li key={ii} className="flex items-start gap-2 text-sm md:text-base text-foreground/70 hover:text-foreground transition-colors">
-                      <span className="shrink-0 mt-1">{item.icon}</span>
-                      {item.text}
-                    </li>
+                <span className="display about-year">{group.year}</span>
+                <ul>
+                  {group.items.map((item) => (
+                    <li key={item} className="py-0.5 leading-normal">{item}</li>
                   ))}
                 </ul>
               </div>
@@ -208,53 +128,22 @@ const About = async () => {
           </div>
         </section>
 
-        {/* ── 연락처 ── */}
-        <section>
-          <SectionHeader title={t("contact")} />
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Link
-              href={`mailto:${siteConfig.social.email}`}
-              className="flex items-center gap-4 p-5 rounded-xl border border-foreground/10 hover:border-cyan-400 transition-colors group"
-            >
-              <MdOutlineEmail className="text-2xl text-foreground/40 group-hover:text-cyan-500 transition-colors shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-foreground/40 mb-0.5">Email</p>
-                <p className="text-sm font-medium group-hover:text-cyan-500 transition-colors truncate">
-                  {siteConfig.social.email}
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="https://github.com/choitjddn0311"
-              className="flex items-center gap-4 p-5 rounded-xl border border-foreground/10 hover:border-cyan-400 transition-colors group"
-            >
-              <FaGithub className="text-2xl text-foreground/40 group-hover:text-cyan-500 transition-colors shrink-0" />
-              <div>
-                <p className="text-xs text-foreground/40 mb-0.5">GitHub</p>
-                <p className="text-sm font-medium group-hover:text-cyan-500 transition-colors">
-                  choitjddn0311
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="https://www.instagram.com/choitjddn31"
-              className="flex items-center gap-4 p-5 rounded-xl border border-foreground/10 hover:border-cyan-400 transition-colors group"
-            >
-              <FaInstagram className="text-2xl text-foreground/40 group-hover:text-cyan-500 transition-colors shrink-0" />
-              <div>
-                <p className="text-xs text-foreground/40 mb-0.5">Instagram</p>
-                <p className="text-sm font-medium group-hover:text-cyan-500 transition-colors">
-                  choitjddn31
-                </p>
-              </div>
-            </Link>
-          </div>
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("contact")}</h2>
+          <ul>
+            {contacts.map((contact, index) => (
+              <li key={contact.label} className={index > 0 ? "border-t border-line" : ""}>
+                <Link href={contact.href} className="flex min-h-11 flex-wrap items-center justify-between gap-x-4 py-2 hover:underline underline-offset-4">
+                  <span className="text-muted">{contact.label}</span>
+                  <span>{contact.value}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
-
       </div>
-    </div>
+      <div className="gap-m" />
+    </>
   );
 };
 
