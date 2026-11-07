@@ -10,18 +10,10 @@
     "roles": "developer / photographer / videographer"
   },
   "home": {
-    "greeting": "안녕하세요.",
-    "greetingName": "최성우",
-    "greetingEnd": "입니다!",
-    "greetingHighlight": "무궁무진한 개발자",
-    "greetingSub": "hello. thank you for comming! i'm",
-    "greetingSubName": "sungwoo Choi",
-    "greetingSubEnd": "dreaming fullstack developer",
+    "greeting": "안녕하세요. 코드를 짜고, 사진과 영상을 찍는 최성우입니다.",
     "stackTitle": "아래는 제가 다룰 수 있는 기술들이에요.",
     "profileName": "최성우",
     "profileNameSub": "Sungwoo choi",
-    "field": "분야",
-    "contact": "연락처",
     "introTitle": "빠르진않지만 꾸준히, 열심히 배우고 있습니다.",
     "affiliation": "소속",
     "career": "경력",
@@ -55,7 +47,13 @@
       "programming": "프로그래밍기능사(구 정보처리기능사)",
       "webDesign": "웹디자인개발기능사",
       "infoProcessing": "정보처리산업기사(과정평가형)"
-    }
+    },
+    "heroPhotoAlt": "바닷가 절벽 앞 바위 위에서 두 팔을 벌리고 선 최성우",
+    "cameraPhotoAlt": "카메라를 들고 있는 최성우의 흑백 사진",
+    "framesLabel": "최근 작업과 글",
+    "projectCount": "프로젝트 {count}",
+    "mediaLabel": "사진·영상",
+    "mediaCount": "사진 {photos} · 영상 {videos}"
   },
   "posts": {
     "title": "Posts",
@@ -117,7 +115,10 @@
   },
   "widget": {
     "title": "최신 글",
-    "viewAll": "전체 글 보기 →"
+    "viewAll": "전체 글 보기 →",
+    "expand": "펼치기",
+    "minimize": "접기",
+    "close": "닫기"
   },
   "a11y": {
     "changeTheme": "테마 변경. 현재 설정: {current}",
@@ -139,5 +140,9 @@
     "photoEmpty": "사진을 고르고 있어요.",
     "filmEmpty": "영상을 준비하고 있어요.",
     "emptyHint": "작품은 곧 이곳에 올라옵니다."
+  },
+  "strip": {
+    "previous": "이전 프레임",
+    "next": "다음 프레임"
   }
 }

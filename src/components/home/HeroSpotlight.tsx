@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 const LERP = 0.07;   // 낮을수록 더 느리게 따라옴 (관성 강도)
 const RADIUS = 200;  // 빛 퍼지는 반경 (px)
-const COLOR = "rgba(34, 211, 238, 0.15)"; // cyan, 밝기 조절
+const COLOR = "color-mix(in srgb, var(--foreground) 8%, transparent)"; // 테마에 맞는 옅은 빛
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -15,6 +15,7 @@ const HeroSpotlight = () => {
     const el = ref.current;
     const parent = el?.parentElement;
     if (!el || !parent) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let targetX = 0;
     let targetY = 0;

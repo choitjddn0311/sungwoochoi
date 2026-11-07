@@ -4,160 +4,142 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
 import { useTranslations } from "next-intl";
-import { useHydrated } from "@/lib/useHydrated";
 
 interface DraggableWidgetProps {
   posts: PostMeta[];
 }
 
 const WIDGET_WIDTH = 288;
+const HEADER_HEIGHT = 44;
+const EXPANDED_HEIGHT = 340;
 
 const DraggableWidget = ({ posts }: DraggableWidgetProps) => {
   const t = useTranslations("widget");
-  const hydrated = useHydrated();
-  // 사용자가 드래그하기 전까지는 null → 화면 우측 하단 기본 위치를 렌더 시점에 계산
+  // 드래그 전에는 null: CSS로 오른쪽 아래에 붙어 있어 펼치면 위로 늘어난다.
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
-  const [isMinimized, setIsMinimized] = useState(false);
+  // 첫 화면을 가리지 않도록 접힌 상태로 시작한다.
+  const [isMinimized, setIsMinimized] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  const widgetRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragOffset = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    let isMounted = true;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDraggingRef.current || !isMounted) return;
-      const newX = Math.max(0, Math.min(window.innerWidth - WIDGET_WIDTH, e.clientX - dragOffset.current.x));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - dragOffset.current.y));
-      setPosition({ x: newX, y: newY });
+    const moveTo = (clientX: number, clientY: number) => {
+      setPosition({
+        x: Math.max(0, Math.min(window.innerWidth - WIDGET_WIDTH, clientX - dragOffset.current.x)),
+        y: Math.max(0, Math.min(window.innerHeight - HEADER_HEIGHT, clientY - dragOffset.current.y)),
+      });
     };
 
-    const handleMouseUp = () => {
-      if (!isMounted) return;
-      isDraggingRef.current = false;
-      setIsDragging(false);
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDraggingRef.current) moveTo(e.clientX, e.clientY);
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isDraggingRef.current || !isMounted) return;
+      if (!isDraggingRef.current) return;
       e.preventDefault();
-      const touch = e.touches[0];
-      const newX = Math.max(0, Math.min(window.innerWidth - WIDGET_WIDTH, touch.clientX - dragOffset.current.x));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - dragOffset.current.y));
-      setPosition({ x: newX, y: newY });
+      moveTo(e.touches[0].clientX, e.touches[0].clientY);
     };
 
-    const handleTouchEnd = () => {
-      if (!isMounted) return;
+    const stopDrag = () => {
       isDraggingRef.current = false;
       setIsDragging(false);
     };
 
     document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseup", stopDrag);
     document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("touchend", handleTouchEnd);
+    document.addEventListener("touchend", stopDrag);
 
     return () => {
-      isMounted = false;
       document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mouseup", stopDrag);
       document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
+      document.removeEventListener("touchend", stopDrag);
     };
   }, []);
 
-  if (!hydrated || isClosed) return null;
-
-  const currentPosition = position ?? {
-    x: window.innerWidth - WIDGET_WIDTH - 24,
-    y: window.innerHeight - 380,
-  };
+  if (isClosed) return null;
 
   const startDrag = (clientX: number, clientY: number) => {
+    const rect = widgetRef.current?.getBoundingClientRect();
+    if (!rect) return;
     isDraggingRef.current = true;
     setIsDragging(true);
-    dragOffset.current = {
-      x: clientX - currentPosition.x,
-      y: clientY - currentPosition.y,
-    };
+    dragOffset.current = { x: clientX - rect.left, y: clientY - rect.top };
+  };
+
+  const toggleMinimized = () => {
+    // 아래쪽으로 옮겨 둔 위젯을 펼칠 때 화면 밖으로 나가지 않게 올린다.
+    if (isMinimized && position) {
+      setPosition({ ...position, y: Math.max(0, Math.min(position.y, window.innerHeight - EXPANDED_HEIGHT)) });
+    }
+    setIsMinimized((value) => !value);
   };
 
   return (
     <div
-      className="fixed z-50 shadow-2xl rounded-xl overflow-hidden border border-foreground/10 bg-background text-foreground"
+      ref={widgetRef}
+      className="fixed z-30 border border-line bg-background text-foreground"
       style={{
-        left: currentPosition.x,
-        top: currentPosition.y,
-        width: WIDGET_WIDTH,
+        width: `min(${WIDGET_WIDTH}px, calc(100vw - 32px))`,
         userSelect: "none",
+        ...(position ? { left: position.x, top: position.y } : { right: 16, bottom: 16 }),
       }}
     >
-      {/* 드래그 핸들 (헤더) */}
+      {/* 드래그 핸들 */}
       <div
-        className={`flex items-center justify-between px-4 py-3 bg-cyan-500 text-white ${
-          isDragging ? "cursor-grabbing" : "cursor-grab"
-        }`}
+        className={`flex items-center justify-between bg-surface pl-3.5 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
         onMouseDown={(e) => {
           e.preventDefault();
           startDrag(e.clientX, e.clientY);
         }}
-        onTouchStart={(e) => {
-          const touch = e.touches[0];
-          startDrag(touch.clientX, touch.clientY);
-        }}
+        onTouchStart={(e) => startDrag(e.touches[0].clientX, e.touches[0].clientY)}
       >
-        <span className="text-sm font-semibold select-none">{t("title")}</span>
-        <div className="flex items-center gap-2">
+        <span className="meta select-none">{t("title")}</span>
+        <div className="flex items-center">
           <button
+            type="button"
             onMouseDown={(e) => e.stopPropagation()}
-            onClick={() => setIsMinimized((v) => !v)}
-            className="w-5 h-5 flex items-center justify-center rounded hover:bg-white/20 transition-colors text-xs"
-            aria-label={isMinimized ? "펼치기" : "최소화"}
+            onTouchStart={(e) => e.stopPropagation()}
+            onClick={toggleMinimized}
+            className="tap meta"
+            aria-label={isMinimized ? t("expand") : t("minimize")}
+            aria-expanded={!isMinimized}
           >
-            {isMinimized ? "+" : "─"}
+            <span aria-hidden="true">{isMinimized ? "+" : "−"}</span>
           </button>
           <button
+            type="button"
             onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
             onClick={() => setIsClosed(true)}
-            className="w-5 h-5 flex items-center justify-center rounded hover:bg-white/20 transition-colors text-xs"
-            aria-label="닫기"
+            className="tap meta"
+            aria-label={t("close")}
           >
-            ×
+            <span aria-hidden="true">×</span>
           </button>
         </div>
       </div>
 
-      {/* 본문 */}
       {!isMinimized && (
         <>
-          <ul className="flex flex-col divide-y divide-foreground/5">
+          <ul className="flex flex-col divide-y divide-line">
             {posts.map((post) => (
               <li key={post.slug}>
-                <Link
-                  href={`/posts/${post.slug}`}
-                  className="flex items-start justify-between gap-2 px-4 py-3  transition-colors group"
-                >
-                  <span className="text-sm line-clamp-1 group-hover:text-cyan-500 transition-colors flex-1">
-                    {post.title}
-                  </span>
-                  <time className="text-xs text-foreground/40 shrink-0 mt-0.5">
-                    {post.date.slice(0, 7)}
-                  </time>
+                <Link href={`/posts/${post.slug}`} className="group flex items-start justify-between gap-2 px-3.5 py-3">
+                  <span className="meta line-clamp-1 flex-1 group-hover:underline">{post.title}</span>
+                  <time className="meta mt-px shrink-0 text-muted">{post.date.slice(0, 7)}</time>
                 </Link>
               </li>
             ))}
           </ul>
-          <div className="px-4 py-3 border-t border-foreground/10">
-            <Link
-              href="/posts"
-              className="text-xs text-foreground/50 hover:text-cyan-500 transition-colors flex justify-end"
-            >
-              {t("viewAll")}
-            </Link>
-          </div>
+          <Link href="/posts" className="meta flex justify-end border-t border-line px-3.5 py-3 text-muted hover:text-foreground">
+            {t("viewAll")}
+          </Link>
         </>
       )}
     </div>
