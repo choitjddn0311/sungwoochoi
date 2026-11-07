@@ -298,8 +298,9 @@ body {
 
   .frame {
     flex: none;
+    /* 넘길 때 높이가 변하지 않도록 모든 프레임의 높이를 같게 두고 폭만 바꾼다 */
+    height: clamp(280px, calc(var(--u) * 30), 576px);
     width: clamp(140px, calc(var(--u) * 15), 288px);
-    aspect-ratio: 3 / 4;
     scroll-snap-align: center;
     display: flex;
     flex-direction: column;
@@ -368,11 +369,12 @@ body {
   }
 
   .strip-large .frame {
+    height: clamp(340px, calc(var(--u) * 40), 768px);
     width: clamp(110px, calc(var(--u) * 14), 270px);
   }
 
   .strip-large .frame[data-selected="true"] {
-    width: clamp(230px, calc(var(--u) * 38), 730px);
+    width: clamp(230px, calc(var(--u) * 30), 576px);
   }
 
   .round-button {
@@ -458,6 +460,7 @@ body {
   }
 
   .frame {
+    height: 90vw;
     width: 48vw;
   }
 
@@ -466,6 +469,7 @@ body {
   }
 
   .strip-large .frame {
+    height: 104vw;
     width: 36vw;
   }
 

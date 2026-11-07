@@ -135,7 +135,7 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
             key={item.key}
             item={item}
             selected={index === selected}
-            sizes={large ? "(max-width: 680px) 78vw, 38vw" : "(max-width: 680px) 68vw, 25vw"}
+            sizes={large ? "(max-width: 680px) 78vw, 30vw" : "(max-width: 680px) 68vw, 25vw"}
             onSelect={() => moveTo(index)}
             onFocus={() => setSelected(index)}
           />
