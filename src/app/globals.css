@@ -709,12 +709,8 @@ body {
 
   .about-photo img {
     object-position: 35% 66%;
-    filter: grayscale(1) brightness(0.6);
-    transition: filter 300ms;
-  }
-
-  .about-photo:hover img {
-    filter: brightness(0.75);
+    /* 원본 색을 유지하고, 겹치는 이름이 읽히도록 밝기만 낮춘다 */
+    filter: brightness(0.6);
   }
 
   .about-photo-2 {
@@ -723,6 +719,8 @@ body {
     grid-row: 1;
     aspect-ratio: 1;
     margin-top: calc(var(--u) * 4);
+    overflow: hidden;
+    background: var(--surface);
   }
 
   .about-photo-2 img {
@@ -817,7 +815,7 @@ body {
 
   .about-photo img {
     object-position: 35% 100%;
-    filter: grayscale(1) brightness(0.45);
+    filter: brightness(0.45);
   }
 
   .about-photo-2 {
