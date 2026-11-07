@@ -26,7 +26,7 @@ const ThemeToggle = () => {
         <button
             type="button"
             onClick={() => setTheme(CYCLE[current] ?? "dark")}
-            className="tap meta text-muted transition-colors duration-150 hover:text-foreground"
+            className="tap meta text-muted transition-colors duration-150 hover:text-foreground sm:justify-end"
             aria-label={t("changeTheme", { current: names[current] ?? current })}
         >
             {SHORT_LABEL[current] ?? "Auto"}

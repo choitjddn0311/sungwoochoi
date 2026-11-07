@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 
 const SearchInput = () => {
   const router = useRouter();
@@ -20,14 +19,14 @@ const SearchInput = () => {
   }, [value, router]);
 
   return (
-    <div className="relative w-full sm:w-80">
-      <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40 text-sm" />
+    <div className="w-full sm:w-80">
       <input
         type="search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="제목, 내용, 태그 검색..."
-        className="w-full pl-9 pr-4 py-2 rounded-lg border border-foreground/20 bg-background text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-cyan-400 transition-colors"
+        aria-label="검색"
+        className="w-full border-b border-foreground bg-transparent py-2 text-base text-foreground placeholder:text-muted"
       />
     </div>
   );

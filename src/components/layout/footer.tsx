@@ -20,7 +20,7 @@ const Footer = async () => {
                     <ul className="flex gap-4">
                         {links.map((link) => (
                             <li key={link.label}>
-                                <Link href={link.href} className="tap transition-colors duration-150 hover:text-foreground">
+                                <Link href={link.href} className="tap min-w-0 transition-colors duration-150 hover:text-foreground">
                                     {link.label}
                                 </Link>
                             </li>

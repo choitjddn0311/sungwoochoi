@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { getPostBySlug, getAllSlugs } from "@/lib/posts";
+import { siteConfig } from "@/lib/siteConfig";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -16,7 +17,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const { meta } = getPostBySlug(slug);
   const fontData = readFileSync(join(process.cwd(), "src/fonts/Griun.ttf"));
 
-  const titleSize = meta.title.length > 30 ? "46px" : "56px";
+  const titleSize = meta.title.length > 30 ? "60px" : "84px";
 
   return new ImageResponse(
     (
@@ -26,64 +27,18 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           height: "630px",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#ffffff",
-          padding: "70px 90px",
+          justifyContent: "space-between",
+          backgroundColor: "#000000",
+          color: "#ffffff",
+          padding: "70px 80px",
           fontFamily: "Griun",
         }}
       >
-        <div
-          style={{
-            width: "56px",
-            height: "6px",
-            backgroundColor: "#22d3ee",
-            marginBottom: "32px",
-            borderRadius: "3px",
-          }}
-        />
-
-        {meta.tags.length > 0 && (
-          <div style={{ display: "flex", gap: "10px", marginBottom: "28px" }}>
-            {meta.tags.slice(0, 3).map((tag) => (
-              <div
-                key={tag}
-                style={{
-                  backgroundColor: "rgba(34, 211, 238, 0.15)",
-                  color: "#22d3ee",
-                  padding: "6px 18px",
-                  borderRadius: "9999px",
-                  fontSize: "22px",
-                }}
-              >
-                {tag}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div
-          style={{
-            fontSize: titleSize,
-            fontWeight: "bold",
-            color: "#111111",
-            lineHeight: "1.3",
-            flex: "1",
-          }}
-        >
-          {meta.title}
+        <div style={{ display: "flex", fontSize: "26px", color: "#a3a3a3" }}>
+          {[meta.date, ...meta.tags.slice(0, 3)].join("  /  ")}
         </div>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span style={{ fontSize: "22px", color: "#aaaaaa" }}>{meta.date}</span>
-          <span style={{ fontSize: "24px", color: "#22d3ee", fontWeight: "bold" }}>
-            sungwoo dev blog
-          </span>
-        </div>
+        <div style={{ display: "flex", fontSize: titleSize, lineHeight: "1.25", wordBreak: "keep-all" }}>{meta.title}</div>
+        <div style={{ display: "flex", fontSize: "30px" }}>{siteConfig.name}</div>
       </div>
     ),
     {

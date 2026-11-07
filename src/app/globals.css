@@ -9,7 +9,6 @@
   --muted: #595959;
   --line: #d9d9d9;
   --surface: #f2f2f2;
-  --maincolor: var(--foreground);
 }
 
 .dark {
@@ -26,7 +25,6 @@
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-surface: var(--surface);
-  --color-maincolor: var(--maincolor);
   --font-sans: var(--ff-latin), var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
   --font-latin: var(--ff-latin), "Helvetica Neue", Arial, sans-serif;
   --font-kr: var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
@@ -140,6 +138,19 @@ body {
   /* 첫 화면 글자 등장: 한 번만 12px 올라온다 */
   .rise {
     animation: rise 400ms ease-out both;
+  }
+}
+
+.loading-line {
+  animation: loading-line 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loading-line {
+  from {
+    left: 0;
+  }
+  to {
+    left: 75%;
   }
 }
 

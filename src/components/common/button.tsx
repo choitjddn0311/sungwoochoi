@@ -4,7 +4,7 @@ import clsx from "clsx";
 // 버튼 형태별 스타일
 const variantStyles = {
     primary: "bg-foreground text-background",
-    secondary: "bg-foreground/10 text-foreground",
+    secondary: "bg-surface text-foreground",
     outline: "border border-foreground text-foreground",
 };
 
@@ -30,7 +30,7 @@ export default function Button({
   return (
     <button
         className={clsx(
-            "rounded-md font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed",
+            "min-h-11 cursor-pointer transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed",
             variantStyles[variant],
             sizeStyles[size],
             className
