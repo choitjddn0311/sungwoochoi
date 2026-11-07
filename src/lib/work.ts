@@ -33,10 +33,11 @@ export const projects = projectsData;
 /** 개수를 프레임 번호처럼 두 자리로 표시한다. */
 export const padCount = (count: number) => String(count).padStart(2, "0");
 
-export const getVideoThumbnail = (video: Video): string | null => {
+/** hd를 켜면 큰 화면용 고화질 썸네일을 준다. 고화질이 없는 영상도 있으므로 실패하면 끄고 다시 부른다. */
+export const getVideoThumbnail = (video: Video, hd = false): string | null => {
   if (video.thumbnail) return video.thumbnail;
   if (video.provider === "youtube") {
-    return `https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/hqdefault.jpg`;
+    return `https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/${hd ? "maxresdefault" : "hqdefault"}.jpg`;
   }
   return null;
 };

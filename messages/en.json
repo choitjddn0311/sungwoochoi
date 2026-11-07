@@ -139,7 +139,9 @@
     "film": "Film",
     "photoEmpty": "Selecting photos.",
     "filmEmpty": "Preparing films.",
-    "emptyHint": "New work will appear here soon."
+    "emptyHint": "New work will appear here soon.",
+    "photoStripLabel": "Photo frames",
+    "play": "Play {title}"
   },
   "strip": {
     "previous": "Previous frame",

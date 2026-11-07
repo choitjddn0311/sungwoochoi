@@ -14,7 +14,7 @@ const WorkNav = () => {
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`tap tap-start transition-colors duration-150 hover:text-foreground ${
+        className={`tap tap-start min-w-0 transition-colors duration-150 hover:text-foreground ${
           active ? "text-foreground underline underline-offset-4" : "text-muted"
         }`}
       >
