@@ -458,3 +458,166 @@ body {
     width: 78vw;
   }
 }
+
+@layer components {
+  /* Work: 사진영상 아래 들여 쓴 행 */
+  .entry-sub,
+  .entry-sub:hover,
+  .entry-sub:focus-visible {
+    padding-left: clamp(24px, calc(var(--u) * 14), 268px);
+  }
+
+  .page-title {
+    font-size: clamp(50px, calc(var(--u) * 13), 250px);
+  }
+
+  /* 기술 스택: 아이콘 대신 큰 글자 */
+  .stack-name {
+    font-family: var(--font-latin);
+    font-weight: 300;
+    font-size: clamp(23px, calc(var(--u) * 3), 58px);
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+
+  /* 사진: 비대칭 배치. 여섯 장마다 같은 배치를 반복한다. */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(10px, calc(var(--u) * 1.6), 30px);
+    align-items: start;
+  }
+
+  .photo-grid > figure {
+    position: relative;
+    aspect-ratio: 3 / 4;
+  }
+
+  .photo-grid > figure:nth-child(6n + 1) {
+    grid-column: 1 / 6;
+  }
+
+  .photo-grid > figure:nth-child(6n + 2) {
+    grid-column: 7 / 10;
+    margin-top: calc(var(--u) * 12);
+  }
+
+  .photo-grid > figure:nth-child(6n + 3) {
+    grid-column: 10 / 13;
+  }
+
+  .photo-grid > figure:nth-child(6n + 4) {
+    grid-column: 2 / 5;
+  }
+
+  .photo-grid > figure:nth-child(6n + 5) {
+    grid-column: 5 / 9;
+    margin-top: calc(var(--u) * 6);
+  }
+
+  .photo-grid > figure:nth-child(6n + 6) {
+    grid-column: 9 / 13;
+  }
+
+  /* 영상: 첫 작품은 전체 폭, 이후에는 좌우로 어긋나게 */
+  .film-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, calc(var(--u) * 6), 110px);
+  }
+
+  .film-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 68%;
+  }
+
+  .film-item:first-child {
+    width: 100%;
+  }
+
+  .film-item:nth-child(3n + 3) {
+    align-self: flex-end;
+  }
+
+  .film-box {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--surface);
+    cursor: pointer;
+  }
+
+  .film-box img {
+    filter: grayscale(1);
+    transition: filter 300ms;
+  }
+
+  .film-box:hover img,
+  .film-box:focus-visible img {
+    filter: none;
+  }
+
+  .film-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.45);
+    color: #ffffff;
+    transition: background-color 200ms, color 200ms;
+  }
+
+  .film-box:hover .film-play,
+  .film-box:focus-visible .film-play {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  .film-title {
+    font-family: var(--font-kr);
+    font-weight: 300;
+    font-size: clamp(21px, calc(var(--u) * 2.6), 50px);
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+  }
+
+  .project-title {
+    font-family: var(--font-kr);
+    font-weight: 200;
+    font-size: clamp(28px, calc(var(--u) * 4.4), 84px);
+    line-height: 1.16;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+}
+
+@media (max-width: 680px) {
+  .photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-grid > figure:nth-child(n) {
+    grid-column: auto;
+    margin-top: 0;
+  }
+
+  .photo-grid > figure:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
+
+  .film-item,
+  .film-item:first-child {
+    width: 100%;
+  }
+}

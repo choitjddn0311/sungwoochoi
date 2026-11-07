@@ -139,7 +139,9 @@
     "film": "영상",
     "photoEmpty": "사진을 고르고 있어요.",
     "filmEmpty": "영상을 준비하고 있어요.",
-    "emptyHint": "작품은 곧 이곳에 올라옵니다."
+    "emptyHint": "작품은 곧 이곳에 올라옵니다.",
+    "photoStripLabel": "사진 프레임",
+    "play": "{title} 재생"
   },
   "strip": {
     "previous": "이전 프레임",
