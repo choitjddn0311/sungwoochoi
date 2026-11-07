@@ -9,7 +9,6 @@
   --muted: #595959;
   --line: #d9d9d9;
   --surface: #f2f2f2;
-  --maincolor: var(--foreground);
 }
 
 .dark {
@@ -26,11 +25,9 @@
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-surface: var(--surface);
-  --color-maincolor: var(--maincolor);
   --font-sans: var(--ff-latin), var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
   --font-latin: var(--ff-latin), "Helvetica Neue", Arial, sans-serif;
   --font-kr: var(--ff-kr), "Apple SD Gothic Neo", sans-serif;
-  --font-note: var(--ff-note), var(--ff-kr), cursive;
 }
 
 html {
@@ -79,14 +76,6 @@ body {
     font-weight: 200;
     letter-spacing: -0.05em;
     line-height: 1;
-  }
-
-  /* 손글씨 메모: 페이지당 한 번 정도만 쓴다 */
-  .note {
-    font-family: var(--font-note);
-    font-size: clamp(19px, 2vw, 27px);
-    line-height: 1.2;
-    transform: rotate(-2deg);
   }
 
   /* 터치 영역 44px을 확보하는 작은 링크와 버튼 */
@@ -140,6 +129,19 @@ body {
   /* 첫 화면 글자 등장: 한 번만 12px 올라온다 */
   .rise {
     animation: rise 400ms ease-out both;
+  }
+}
+
+.loading-line {
+  animation: loading-line 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loading-line {
+  from {
+    left: 0;
+  }
+  to {
+    left: 75%;
   }
 }
 
@@ -263,18 +265,16 @@ body {
     top: calc(clamp(28px, calc(var(--u) * 6), 84px) + var(--u) * 16);
   }
 
-  .hero-note {
-    position: absolute;
-    right: var(--gut);
-    bottom: clamp(40px, calc(var(--u) * 7), 100px);
-  }
-
   /* 프레임 띠 */
   .strip {
+    /* 선택된 프레임의 폭. 띠의 높이를 이 프레임에 맞춰 고정해서 넘길 때 아래 내용이 움직이지 않게 한다. */
+    --frame-selected: clamp(220px, calc(var(--u) * 25), 480px);
+    height: calc(var(--frame-selected) * 4 / 3);
     display: flex;
     align-items: center;
     gap: 10px;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
     position: relative;
@@ -298,13 +298,17 @@ body {
     border: 1px solid var(--line);
     text-align: left;
     cursor: pointer;
-    transition: background-color 200ms, color 200ms;
+    transition:
+      background-color 200ms,
+      color 200ms,
+      width 450ms cubic-bezier(0.33, 1, 0.68, 1);
   }
 
   .frame-title {
     font-size: 15px;
     line-height: 1.4;
     font-weight: 400;
+    transition: font-size 450ms cubic-bezier(0.33, 1, 0.68, 1);
   }
 
   .frame-eyebrow {
@@ -322,7 +326,7 @@ body {
   }
 
   .frame[data-selected="true"] {
-    width: clamp(220px, calc(var(--u) * 25), 480px);
+    width: var(--frame-selected);
   }
 
   .frame[data-selected="true"] .frame-title {
@@ -352,12 +356,16 @@ body {
     filter: none;
   }
 
+  .strip-large {
+    --frame-selected: clamp(230px, calc(var(--u) * 38), 730px);
+  }
+
   .strip-large .frame {
     width: clamp(110px, calc(var(--u) * 14), 270px);
   }
 
   .strip-large .frame[data-selected="true"] {
-    width: clamp(230px, calc(var(--u) * 38), 730px);
+    width: var(--frame-selected);
   }
 
   .round-button {
@@ -415,8 +423,7 @@ body {
 
   .hero-p1,
   .hero-p2,
-  .hero-meta,
-  .hero-note {
+  .hero-meta {
     position: relative;
     inset: auto;
   }
@@ -437,25 +444,25 @@ body {
     order: 4;
   }
 
-  .hero-note {
-    order: 5;
-    align-self: flex-start;
+  .strip {
+    --frame-selected: 68vw;
+  }
+
+  .strip-large {
+    --frame-selected: 78vw;
   }
 
   .frame {
     width: 48vw;
   }
 
-  .frame[data-selected="true"] {
-    width: 68vw;
-  }
-
   .strip-large .frame {
     width: 36vw;
   }
 
+  .frame[data-selected="true"],
   .strip-large .frame[data-selected="true"] {
-    width: 78vw;
+    width: var(--frame-selected);
   }
 }
 
@@ -675,18 +682,17 @@ body {
     grid-column: 6 / 10;
     grid-row: 1;
     aspect-ratio: 6 / 5;
+    /* 얼굴이 이름의 획 사이 빈 공간에 오도록 오른쪽으로 민다 */
+    margin-left: calc(var(--u) * 5.6);
+    margin-right: calc(var(--u) * -5.6);
     overflow: hidden;
     background: var(--surface);
   }
 
   .about-photo img {
     object-position: 35% 66%;
-    filter: grayscale(1) brightness(0.6);
-    transition: filter 300ms;
-  }
-
-  .about-photo:hover img {
-    filter: brightness(0.75);
+    /* 원본 색을 유지하고, 겹치는 이름이 읽히도록 밝기만 낮춘다 */
+    filter: brightness(0.6);
   }
 
   .about-photo-2 {
@@ -695,6 +701,8 @@ body {
     grid-row: 1;
     aspect-ratio: 1;
     margin-top: calc(var(--u) * 4);
+    overflow: hidden;
+    background: var(--surface);
   }
 
   .about-photo-2 img {
@@ -756,6 +764,12 @@ body {
     letter-spacing: -0.03em;
   }
 
+  .about-motto {
+    font-size: clamp(40px, calc(var(--u) * 6), 115px);
+    line-height: 1;
+    text-wrap: balance;
+  }
+
   .about-year {
     font-size: clamp(44px, calc(var(--u) * 6.4), 122px);
   }
@@ -785,11 +799,13 @@ body {
   .about-photo {
     grid-column: 3 / -1;
     aspect-ratio: 4 / 5;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .about-photo img {
     object-position: 35% 100%;
-    filter: grayscale(1) brightness(0.45);
+    filter: brightness(0.45);
   }
 
   .about-photo-2 {

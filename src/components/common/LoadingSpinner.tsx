@@ -1,11 +1,15 @@
-export default function LoadingSpinner() {
+import { getTranslations } from "next-intl/server";
+
+/** 얇은 선이 좌우로 오가는 로딩 표시 */
+export default async function LoadingSpinner() {
+  const t = await getTranslations("errors");
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <div className="relative w-12 h-12">
-        <div className="absolute inset-0 rounded-full border-4 border-foreground/10" />
-        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-maincolor animate-spin" />
+    <div role="status" className="wrap flex min-h-[60vh] flex-col justify-center gap-3">
+      <div className="relative h-px w-full overflow-hidden bg-line">
+        <div className="loading-line absolute inset-y-0 w-1/4 bg-foreground" />
       </div>
-      <span className="text-sm text-foreground/40 tracking-widest animate-pulse">loading</span>
+      <span className="meta text-muted">{t("loading")}</span>
     </div>
   );
 }

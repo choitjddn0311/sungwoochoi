@@ -45,7 +45,7 @@ const Header = ({ locale }: { locale: string }) => {
 
                 <div className="flex items-center gap-1 sm:gap-4">
                     <nav aria-label={a("mainNav")} className="hidden sm:block">
-                        <ul className="flex items-center gap-4">
+                        <ul className="flex items-center gap-5">
                             {headerMenu.map((item) => {
                                 const active = item.match(pathname);
                                 return (
@@ -53,7 +53,7 @@ const Header = ({ locale }: { locale: string }) => {
                                         <Link
                                             href={item.href}
                                             aria-current={active ? "page" : undefined}
-                                            className={`tap transition-colors duration-150 hover:text-foreground ${active ? "text-foreground" : "text-muted"}`}
+                                            className={`tap min-w-0 transition-colors duration-150 hover:text-foreground ${active ? "text-foreground" : "text-muted"}`}
                                         >
                                             {item.label}
                                         </Link>

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import HeroSpotlight from "@/components/home/HeroSpotlight";
-import RecentPostsWidget from "@/components/home/RecentPostsWidget";
 import type { FrameItem } from "@/components/common/Frame";
 import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
@@ -77,8 +75,7 @@ const Home = async () => {
 
   return (
     <>
-      <section className="relative">
-        <HeroSpotlight />
+      <section>
         <div className="hero">
           <h1>
             <span className="hero-l1 display rise">
@@ -111,7 +108,6 @@ const Home = async () => {
               <li key={role}>{role}</li>
             ))}
           </ul>
-          <p className="hero-note note">make life what i dream!</p>
         </div>
       </section>
 
@@ -150,8 +146,6 @@ const Home = async () => {
       <div className="gap-m" />
       <SectionFooter count={allPosts.length} label="POSTS" href="/posts" />
       <div className="gap-l" />
-
-      <RecentPostsWidget />
     </>
   );
 };

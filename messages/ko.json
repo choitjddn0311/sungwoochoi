@@ -83,10 +83,10 @@
     "postNav": "이전 글과 다음 글"
   },
   "about": {
-    "aboutMe": "About Me",
+    "aboutMe": "자기소개",
     "aboutMeContent1": "저는 끝까지 포기하지 않는 사람입니다.",
     "aboutMeContent2": "많은 경험들을 토대로, 도전을 멈추지 않을려고 노력하고 있습니다. 도전에서만 그치지 않고 도전을 끝마치는 과정까지 이어갈 수 있도록 노력하며 개발하고, 사진과 영상을 만들고 있습니다.",
-    "whatILove": "What I Love",
+    "whatILove": "좋아하는 것",
     "devTitle": "개발",
     "devContent": "웹 개발을 주로 했기 때문에, 프론트와 백을 다루는 것을 좋아합니다. 또 잘 다루는건 아니지만 AI 분야 중 CV에 특히 관심이 있어요.",
     "photoTitle": "사진 · 영상",
@@ -113,19 +113,13 @@
     "t2023_1": "웹 디자인 및 개발 기능반 입부",
     "t2023_2": "인평자동차고등학교 자동차it과 입학",
     "heroPhotoAlt": "바닷가 절벽 앞 바위 위에서 두 팔을 벌리고 선 최성우",
-    "cameraPhotoAlt": "카메라를 들고 있는 최성우의 흑백 사진"
+    "cameraPhotoAlt": "카메라를 들고 있는 최성우의 흑백 사진",
+    "mottoLabel": "내 인생의 모토"
   },
   "projects": {
     "github": "GitHub",
     "demo": "데모",
     "noProjects": "등록된 프로젝트가 없습니다."
-  },
-  "widget": {
-    "title": "최신 글",
-    "viewAll": "전체 글 보기 →",
-    "expand": "펼치기",
-    "minimize": "접기",
-    "close": "닫기"
   },
   "a11y": {
     "changeTheme": "테마 변경. 현재 설정: {current}",
@@ -153,5 +147,14 @@
   "strip": {
     "previous": "이전 프레임",
     "next": "다음 프레임"
+  },
+  "errors": {
+    "notFoundTitle": "페이지를 찾을 수 없어요.",
+    "notFoundMessage": "요청하신 페이지가 존재하지 않거나 이동되었습니다.",
+    "errorTitle": "오류가 발생했어요.",
+    "errorMessage": "일시적인 문제입니다. 잠시 후 다시 시도해주세요.",
+    "retry": "다시 시도",
+    "backToHome": "홈으로 돌아가기",
+    "loading": "불러오는 중"
   }
 }

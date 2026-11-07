@@ -4,7 +4,7 @@ import { join } from "path";
 import { siteConfig } from "@/lib/siteConfig";
 
 export const runtime = "nodejs";
-export const alt = "sungwoo dev blog";
+export const alt = "Sungwoo Choi";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -19,48 +19,17 @@ export default function Image() {
           height: "630px",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#ffffff",
-          padding: "70px 90px",
+          justifyContent: "space-between",
+          backgroundColor: "#000000",
+          color: "#ffffff",
+          padding: "70px 80px",
           fontFamily: "Griun",
         }}
       >
-        <div
-          style={{
-            width: "56px",
-            height: "6px",
-            backgroundColor: "#22d3ee",
-            marginBottom: "48px",
-            borderRadius: "3px",
-          }}
-        />
-
-        <div
-          style={{
-            fontSize: "72px",
-            fontWeight: "bold",
-            color: "#22d3ee",
-            letterSpacing: "-2px",
-            lineHeight: "1",
-          }}
-        >
-          sungwoo dev blog
-        </div>
-
-        <div
-          style={{
-            fontSize: "30px",
-            color: "#555555",
-            marginTop: "24px",
-            flex: "1",
-          }}
-        >
-          개발자를 꿈꾸는 최성우의 포트폴리오
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <span style={{ fontSize: "22px", color: "#aaaaaa" }}>
-            {new URL(siteConfig.url).host}
-          </span>
+        <div style={{ display: "flex", fontSize: "132px", lineHeight: "1.05" }}>Sungwoo Choi</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          <div style={{ display: "flex", fontSize: "38px" }}>developer / photographer / videographer</div>
+          <div style={{ display: "flex", fontSize: "24px", color: "#a3a3a3" }}>{new URL(siteConfig.url).host}</div>
         </div>
       </div>
     ),

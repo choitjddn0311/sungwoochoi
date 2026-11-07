@@ -113,19 +113,13 @@
     "t2023_1": "Joined the Web Design & Development skills team",
     "t2023_2": "Entered Inpyung Automotive High School, Automotive IT Dept.",
     "heroPhotoAlt": "Sungwoo Choi standing on a rock with arms open in front of a sea cliff",
-    "cameraPhotoAlt": "Black and white photo of Sungwoo Choi holding a camera"
+    "cameraPhotoAlt": "Black and white photo of Sungwoo Choi holding a camera",
+    "mottoLabel": "Motto of My Life"
   },
   "projects": {
     "github": "GitHub",
     "demo": "Demo",
     "noProjects": "No projects yet."
-  },
-  "widget": {
-    "title": "Recent Posts",
-    "viewAll": "View all posts →",
-    "expand": "Expand",
-    "minimize": "Collapse",
-    "close": "Close"
   },
   "a11y": {
     "changeTheme": "Change theme. Current: {current}",
@@ -153,5 +147,14 @@
   "strip": {
     "previous": "Previous frame",
     "next": "Next frame"
+  },
+  "errors": {
+    "notFoundTitle": "We can't find this page.",
+    "notFoundMessage": "The page may not exist or may have moved.",
+    "errorTitle": "Something went wrong.",
+    "errorMessage": "This is a temporary problem. Please try again in a moment.",
+    "retry": "Try again",
+    "backToHome": "Back to home",
+    "loading": "Loading"
   }
 }

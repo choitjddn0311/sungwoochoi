@@ -24,10 +24,10 @@ const TagFilter = ({ tags }: TagFilterProps) => {
     <div className="flex flex-wrap gap-2">
       <button
         onClick={() => handleSelect("")}
-        className={`px-3 py-1 rounded-full text-sm transition-colors ${
+        className={`meta min-h-9 cursor-pointer px-2 transition-colors duration-150 ${
           !selectedTag
-            ? "bg-cyan-400 text-white font-semibold"
-            : "border border-foreground/20 text-foreground/60 hover:border-cyan-400 hover:text-cyan-500"
+            ? "bg-foreground text-background"
+            : "text-muted hover:text-foreground"
         }`}
       >
         전체
@@ -36,14 +36,14 @@ const TagFilter = ({ tags }: TagFilterProps) => {
         <button
           key={tag}
           onClick={() => handleSelect(tag)}
-          className={`px-3 py-1 rounded-full text-sm transition-colors ${
+          className={`meta min-h-9 cursor-pointer px-2 transition-colors duration-150 ${
             selectedTag === tag
-              ? "bg-cyan-400 text-white font-semibold"
-              : "border border-foreground/20 text-foreground/60 hover:border-cyan-400 hover:text-cyan-500"
+              ? "bg-foreground text-background"
+              : "text-muted hover:text-foreground"
           }`}
         >
           {tag}
-          <span className="ml-1 text-xs opacity-70">{count}</span>
+          <span className="ml-1">{count}</span>
         </button>
       ))}
     </div>

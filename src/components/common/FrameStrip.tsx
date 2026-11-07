@@ -5,6 +5,10 @@ import { useTranslations } from "next-intl";
 import { padCount } from "@/lib/work";
 import Frame, { type FrameItem } from "./Frame";
 
+// globals.css의 .frame 전환 시간과 곡선에 맞춘다.
+const MOVE_DURATION = 450;
+const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
+
 interface FrameStripProps {
   items: FrameItem[];
   label: string;
@@ -20,6 +24,8 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
   const stripRef = useRef<HTMLDivElement>(null);
   const shouldCenter = useRef(false);
   const scrollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const moveFrame = useRef(0);
+  const isMoving = useRef(false);
 
   // 버튼이나 키보드로 고른 프레임은 크기가 바뀐 뒤 가운데로 옮긴다.
   useEffect(() => {
@@ -28,21 +34,56 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
     const strip = stripRef.current;
     const frame = strip?.children[selected] as HTMLElement | undefined;
     if (!strip || !frame) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    strip.scrollTo({
-      left: frame.offsetLeft - (strip.clientWidth - frame.offsetWidth) / 2,
-      behavior: reduceMotion ? "auto" : "smooth",
-    });
+
+    // 프레임 크기가 바뀌는 동안 가운데 위치도 함께 변하므로 매 프레임 다시 계산한다.
+    const centerOf = () => frame.offsetLeft - (strip.clientWidth - frame.offsetWidth) / 2;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      strip.scrollLeft = centerOf();
+      return;
+    }
+
+    cancelAnimationFrame(moveFrame.current);
+    const from = strip.scrollLeft;
+    const startedAt = performance.now();
+
+    const step = (now: number) => {
+      // 첫 프레임의 시각은 시작 시각보다 앞설 수 있어 0 아래로 내려가지 않게 막는다.
+      const progress = Math.max(0, Math.min(1, (now - startedAt) / MOVE_DURATION));
+      strip.scrollLeft = from + (centerOf() - from) * easeOutCubic(progress);
+      if (progress < 1) {
+        moveFrame.current = requestAnimationFrame(step);
+      } else {
+        isMoving.current = false;
+        strip.style.scrollSnapType = "";
+      }
+    };
+    moveFrame.current = requestAnimationFrame(step);
   }, [selected]);
 
-  useEffect(() => () => clearTimeout(scrollTimer.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(scrollTimer.current);
+      cancelAnimationFrame(moveFrame.current);
+    },
+    [],
+  );
 
   if (items.length === 0) return null;
 
-  const move = (delta: number) => {
+  const moveTo = (index: number) => {
+    if (index === selected) return;
+    // 크기가 바뀌는 순간 브라우저 스냅이 끼어들어 튀지 않도록 렌더 전에 끈다.
+    const strip = stripRef.current;
+    if (strip && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      strip.style.scrollSnapType = "none";
+      isMoving.current = true;
+    }
     shouldCenter.current = true;
-    setSelected((current) => (current + delta + items.length) % items.length);
+    setSelected(index);
   };
+
+  const move = (delta: number) => moveTo((selected + delta + items.length) % items.length);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
@@ -54,6 +95,7 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
   // 터치로 넘겼을 때는 멈춘 위치에서 가운데에 가장 가까운 프레임을 고른다.
   const onScroll = () => {
     clearTimeout(scrollTimer.current);
+    if (isMoving.current) return;
     scrollTimer.current = setTimeout(() => {
       const strip = stripRef.current;
       if (!strip) return;
@@ -94,10 +136,7 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
             item={item}
             selected={index === selected}
             sizes={large ? "(max-width: 680px) 78vw, 38vw" : "(max-width: 680px) 68vw, 25vw"}
-            onSelect={() => {
-              shouldCenter.current = true;
-              setSelected(index);
-            }}
+            onSelect={() => moveTo(index)}
             onFocus={() => setSelected(index)}
           />
         ))}

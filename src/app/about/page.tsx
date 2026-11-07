@@ -43,7 +43,7 @@ const About = async () => {
         <figure className="about-photo">
           <Image src="/img/about_profile.jpg" alt={t("heroPhotoAlt")} fill priority sizes="(max-width: 680px) 83vw, 33vw" className="object-cover" />
         </figure>
-        <figure className="about-photo-2 photo">
+        <figure className="about-photo-2">
           <Image src="/img/profile2.jpg" alt={t("cameraPhotoAlt")} fill sizes="16vw" className="object-cover" />
         </figure>
         <h1 className="about-name">
@@ -55,11 +55,15 @@ const About = async () => {
             <span>developer / photographer / videographer</span>
             <span>{t("heroSubtitle")}</span>
           </div>
-          <p className="note">make life what i dream!</p>
         </div>
       </section>
 
       <div className="wrap">
+        <section className="about-row">
+          <h2 className="meta text-muted">{t("mottoLabel")}</h2>
+          <p className="display about-motto">make life what i dream!</p>
+        </section>
+
         <section className="about-row">
           <h2 className="meta text-muted">{t("aboutMe")}</h2>
           <div>
