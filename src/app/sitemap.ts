@@ -25,12 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    {
-      url: `${siteConfig.url}/projects`,
+    ...["/work", "/work/dev", "/work/photo", "/work/film"].map((path) => ({
+      url: `${siteConfig.url}${path}`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
     {
       url: `${siteConfig.url}/about`,
       lastModified: new Date(),

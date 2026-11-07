@@ -112,7 +112,7 @@
   },
   "projects": {
     "github": "GitHub",
-    "demo": "경로",
+    "demo": "데모",
     "noProjects": "등록된 프로젝트가 없습니다."
   },
   "widget": {
@@ -128,5 +128,16 @@
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기",
     "mainNav": "주 메뉴"
+  },
+  "work": {
+    "navLabel": "Work 하위 메뉴",
+    "overview": "Work",
+    "dev": "개발",
+    "media": "사진영상",
+    "photo": "사진",
+    "film": "영상",
+    "photoEmpty": "사진을 고르고 있어요.",
+    "filmEmpty": "영상을 준비하고 있어요.",
+    "emptyHint": "작품은 곧 이곳에 올라옵니다."
   }
 }
