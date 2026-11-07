@@ -50,35 +50,23 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const t = await getTranslations("post");
 
   return (
-    <div className="w-full flex justify-center bg-background text-foreground min-h-165">
+    <>
       <ReadingProgressBar />
-      <div className="flex gap-10 w-full max-w-screen-xl px-6 py-20 items-start">
-        <article className="min-w-0 flex-1">
-          <Link
-            href="/posts"
-            className="text-cyan-500 hover:text-cyan-400 mb-8 inline-block"
-          >
+      <article>
+        <header className="wrap flex flex-col gap-4.5 pt-[clamp(24px,5vw,64px)]">
+          <Link href="/posts" className="tap tap-start meta self-start text-muted transition-colors duration-150 hover:text-foreground">
             {t("backToList")}
           </Link>
+          <h1 className={`article-title ${meta.title.length > 24 ? "article-title-long" : "article-title-short"}`}>{meta.title}</h1>
+          <p className="meta flex flex-wrap gap-x-3 text-muted">
+            <time dateTime={meta.date}>{meta.date}</time>
+            {meta.tags.length > 0 && <span>{meta.tags.join(" / ")}</span>}
+          </p>
+        </header>
+        <div className="gap-m" />
 
-          <header className="mb-10">
-            <h1 className="text-2xl 2xl:text-4xl xl:text-4xl lg:text-3xl md:text-3xl sm:text-2xl font-bold mb-3">{meta.title}</h1>
-            <time className="text-foreground/50 text-sm 2xl:text-base xl:text-base lg:text-base md:text-base sm:text-s">{meta.date}</time>
-            {meta.tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {meta.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2 py-1 rounded-full bg-cyan-400/10 text-cyan-500"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </header>
-
-          <div>
+        <div className="wrap article-grid">
+          <div className="article-body">
             <MDXRemote
               source={content}
               components={mdxComponents}
@@ -89,18 +77,18 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
               }}
             />
           </div>
+          <aside className="article-toc">
+            <TableOfContents items={tocItems} />
+          </aside>
+        </div>
+      </article>
 
-          <PostNav prev={prev} next={next} />
-          <Comments />
-        </article>
-
-        {/* 우측 사이드바: TOC + 연관글 */}
-        <aside className="hidden lg:block w-60 shrink-0 sticky top-30 self-start">
-          <TableOfContents items={tocItems} />
-          <RelatedPosts posts={relatedPosts} />
-        </aside>
-      </div>
-    </div>
+      <div className="gap-l" />
+      <PostNav prev={prev} next={next} />
+      <RelatedPosts posts={relatedPosts} />
+      <Comments />
+      <div className="gap-l" />
+    </>
   );
 };
 

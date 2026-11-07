@@ -621,3 +621,182 @@ body {
     width: 100%;
   }
 }
+
+@layer components {
+  /* 글 본문 */
+  .article-title {
+    font-family: var(--font-kr);
+    font-weight: 200;
+    letter-spacing: -0.05em;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+
+  .article-title-short {
+    font-size: clamp(44px, calc(var(--u) * 9.4), 180px);
+  }
+
+  .article-title-long {
+    font-size: clamp(32px, calc(var(--u) * 5.4), 104px);
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .article-body {
+    min-width: 0;
+    font-size: 17px;
+    line-height: 1.85;
+  }
+
+  .article-toc {
+    display: none;
+  }
+
+  /* About 첫 화면: 큰 이름이 사진과 겹친다 */
+  .about-hero {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 1920px;
+    margin-inline: auto;
+    background: var(--background);
+    padding: clamp(20px, calc(var(--u) * 4), 56px) var(--gut) clamp(28px, calc(var(--u) * 4), 56px);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .about-photo {
+    position: relative;
+    grid-column: 6 / 10;
+    grid-row: 1;
+    aspect-ratio: 6 / 5;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .about-photo img {
+    object-position: 35% 66%;
+    filter: grayscale(1) brightness(0.6);
+    transition: filter 300ms;
+  }
+
+  .about-photo:hover img {
+    filter: brightness(0.75);
+  }
+
+  .about-photo-2 {
+    position: relative;
+    grid-column: 11 / 13;
+    grid-row: 1;
+    aspect-ratio: 1;
+    margin-top: calc(var(--u) * 4);
+  }
+
+  .about-photo-2 img {
+    transform: scale(1.5625);
+    transform-origin: 0% 52.8%;
+  }
+
+  .about-name {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    z-index: 1;
+    mix-blend-mode: difference;
+    color: #ffffff;
+    pointer-events: none;
+    font-weight: 200;
+  }
+
+  .about-name span {
+    display: block;
+  }
+
+  .about-name-kr {
+    font-size: calc(var(--u) * 31);
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+  }
+
+  .about-name-en {
+    font-size: calc(var(--u) * 9.4);
+    text-align: right;
+    padding-right: 0.1em;
+    padding-top: 0.14em;
+    font-weight: 300;
+  }
+
+  .about-low {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-top: 16px;
+  }
+
+  .about-row {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 14px 32px;
+    padding-block: clamp(20px, calc(var(--u) * 3), 36px);
+    border-top: 1px solid var(--line);
+  }
+
+  .about-lead {
+    font-family: var(--font-kr);
+    font-weight: 300;
+    font-size: clamp(24px, calc(var(--u) * 3), 58px);
+    line-height: 1.3;
+    letter-spacing: -0.03em;
+  }
+
+  .about-year {
+    font-size: clamp(44px, calc(var(--u) * 6.4), 122px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .article-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 680px) minmax(0, 1fr);
+  }
+
+  .article-body {
+    grid-column: 2;
+  }
+
+  .article-toc {
+    display: block;
+    grid-column: 3;
+    position: sticky;
+    top: 64px;
+    align-self: start;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  /* 글자는 위쪽 절벽에 놓고, 인물은 글자 아래로 보이게 세로로 길게 자른다 */
+  .about-photo {
+    grid-column: 3 / -1;
+    aspect-ratio: 4 / 5;
+  }
+
+  .about-photo img {
+    object-position: 35% 100%;
+    filter: grayscale(1) brightness(0.45);
+  }
+
+  .about-photo-2 {
+    display: none;
+  }
+
+  .about-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -68,19 +68,24 @@
     "resultCount": "{count, plural, one {# result} other {# results}}",
     "tagResultPrefix": "tag",
     "previous": "← Prev",
-    "next": "Next →"
+    "next": "Next →",
+    "searchLabel": "Search",
+    "tagFilter": "Filter by tag",
+    "pagination": "Pages"
   },
   "post": {
     "backToList": "← Back to list",
     "prevPost": "← Previous",
     "nextPost": "Next →",
     "relatedPosts": "Related Posts",
-    "comments": "Comments"
+    "comments": "Comments",
+    "toc": "Contents",
+    "postNav": "Previous and next posts"
   },
   "about": {
     "aboutMe": "About Me",
     "aboutMeContent1": "I'm someone who never gives up.",
-    "aboutMeContent2": "Building on my many experiences, I try never to stop taking on challenges. And I don't stop at just starting them — I keep developing with the goal of seeing every challenge through to the end.",
+    "aboutMeContent2": "Building on my many experiences, I try never to stop taking on challenges. And I don't stop at just starting them. I build software and make photos and videos with the goal of seeing every challenge through to the end.",
     "whatILove": "What I Love",
     "devTitle": "Development",
     "devContent": "Since I've mostly worked on the web, I enjoy handling both frontend and backend. I'm not an expert yet, but within AI I'm especially interested in computer vision.",
@@ -90,7 +95,7 @@
     "goal1Title": "Don't be an ordinary developer",
     "goal1Desc": "Instead of building what everyone else builds, I want to start from what I need, what bothers me, and what I'm curious about — and become a developer who brings positive value to everyone.",
     "goal2Title": "Don't get boxed in",
-    "goal2Desc": "I want to be a developer the world needs — not one who only codes, or one stuck inside a box.",
+    "goal2Desc": "I don't want to be boxed in as just a developer. I want to make what the world needs with code, photos and videos.",
     "timeline": "My Timeline",
     "contact": "Contact",
     "heroSubtitle": "I want to build the life and the world I dream of!",
@@ -106,7 +111,9 @@
     "t2024_1": "Started at Slexn Co., Ltd. via Industry-Academia Apprenticeship School (8th cohort)",
     "t2024_2": "Incheon Regional Skills Competition, Web Design & Development — Bronze Medal",
     "t2023_1": "Joined the Web Design & Development skills team",
-    "t2023_2": "Entered Inpyung Automotive High School, Automotive IT Dept."
+    "t2023_2": "Entered Inpyung Automotive High School, Automotive IT Dept.",
+    "heroPhotoAlt": "Sungwoo Choi standing on a rock with arms open in front of a sea cliff",
+    "cameraPhotoAlt": "Black and white photo of Sungwoo Choi holding a camera"
   },
   "projects": {
     "github": "GitHub",

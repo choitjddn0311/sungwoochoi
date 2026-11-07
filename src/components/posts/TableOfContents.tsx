@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { TocItem } from "@/lib/toc";
 
 export default function TableOfContents({ items }: { items: TocItem[] }) {
+  const t = useTranslations("post");
   const [activeId, setActiveId] = useState<string>("");
   const observerRef = useRef<IntersectionObserver | null>(null);
   const tocRef = useRef<HTMLUListElement>(null);
@@ -47,11 +49,9 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <div>
-      <p className="text-xs font-semibold text-foreground/40 uppercase tracking-wider mb-3">
-        목차
-      </p>
-      <div className="max-h-[40vh] overflow-y-auto overflow-x-hidden">
+    <nav aria-label={t("toc")}>
+      <p className="meta mb-2 text-muted">{t("toc")}</p>
+      <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden">
         <ul className="space-y-1" ref={tocRef}>
           {items.map((item) => (
             <li
@@ -61,10 +61,9 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
             >
               <a
                 href={`#${item.id}`}
-                className={`block text-sm py-0.5 transition-all duration-150 truncate ease-in-out ${
-                  activeId === item.id
-                    ? "text-cyan-500 scale-101 font-medium"
-                    : "text-foreground/50 hover:text-foreground/80 scale-100"
+                aria-current={activeId === item.id ? "location" : undefined}
+                className={`meta block py-1 transition-colors duration-150 ${
+                  activeId === item.id ? "text-foreground" : "text-muted hover:text-foreground"
                 }`}
               >
                 {item.text}
@@ -73,6 +72,6 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
           ))}
         </ul>
       </div>
-    </div>
+    </nav>
   );
 }

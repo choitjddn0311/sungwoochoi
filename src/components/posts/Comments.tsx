@@ -39,9 +39,9 @@ const Comments = () => {
   }, [utterancesTheme]);
 
   return (
-    <section className="mt-16 pt-10 border-t border-foreground/10">
-      <h2 className="text-lg font-semibold mb-6">{t("comments")}</h2>
-      <div ref={ref} />
+    <section className="wrap pt-[clamp(48px,7vw,96px)]">
+      <h2 className="meta border-b border-line pb-3.5 text-muted">{t("comments")}</h2>
+      <div ref={ref} className="pt-4" />
     </section>
   );
 };
