@@ -10,18 +10,10 @@
     "roles": "developer / photographer / videographer"
   },
   "home": {
-    "greeting": "Hello! I'm",
-    "greetingName": "Sungwoo Choi",
-    "greetingEnd": ", a developer who dreams without limits!",
-    "greetingHighlight": "developer who dreams without limits",
-    "greetingSub": "Hello, thank you for coming! I'm",
-    "greetingSubName": "Sungwoo Choi",
-    "greetingSubEnd": "dreaming fullstack developer",
+    "greeting": "Hello. I'm Sungwoo Choi. I write code and shoot photos and videos.",
     "stackTitle": "Here are the technologies I can work with.",
     "profileName": "Sungwoo Choi",
     "profileNameSub": "최성우",
-    "field": "Fields",
-    "contact": "Contact",
     "introTitle": "Not the fastest, but always learning — steadily and earnestly.",
     "affiliation": "Affiliation",
     "career": "Career",
@@ -55,7 +47,13 @@
       "programming": "Craftsman Programming (formerly Craftsman Information Processing)",
       "webDesign": "Craftsman Web Design Development",
       "infoProcessing": "Industrial Engineer Information Processing (Course-based)"
-    }
+    },
+    "heroPhotoAlt": "Sungwoo Choi standing on a rock with arms open in front of a sea cliff",
+    "cameraPhotoAlt": "Black and white photo of Sungwoo Choi holding a camera",
+    "framesLabel": "Recent work and posts",
+    "projectCount": "Projects {count}",
+    "mediaLabel": "Photo·Video",
+    "mediaCount": "Photos {photos} · Films {videos}"
   },
   "posts": {
     "title": "Posts",
@@ -117,7 +115,10 @@
   },
   "widget": {
     "title": "Recent Posts",
-    "viewAll": "View all posts →"
+    "viewAll": "View all posts →",
+    "expand": "Expand",
+    "minimize": "Collapse",
+    "close": "Close"
   },
   "a11y": {
     "changeTheme": "Change theme. Current: {current}",
@@ -139,5 +140,9 @@
     "photoEmpty": "Selecting photos.",
     "filmEmpty": "Preparing films.",
     "emptyHint": "New work will appear here soon."
+  },
+  "strip": {
+    "previous": "Previous frame",
+    "next": "Next frame"
   }
 }
