@@ -31,8 +31,8 @@
     "title": "Nook",
     "title_en": "Nook",
     "period": "2026.11 ~ 개발중",
-    "description": "나만의 작은 구석, 개인 다이어리 겸 생각 정리 웹앱입니다. 짧게 정리해 둔 생각을 한 달 뒤, 1년 뒤 같은 날에 다시 꺼내 볼 수 있습니다.",
-    "description_en": "My own little corner, a personal diary and thought-organizing web app. The thoughts you jot down come back a month or a year later on the same day.",
+    "description": "오늘의 생각을 다시 만나는 곳, Nook. 개인 다이어리 겸 생각 정리 웹앱으로, 짧게 정리해 둔 생각을 한 달 뒤, 1년 뒤 같은 날에 다시 꺼내 볼 수 있습니다.",
+    "description_en": "A place to meet today's thoughts again, Nook. A personal diary and thought-organizing web app where the thoughts you jot down come back a month or a year later on the same day.",
     "techs": ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "PWA"],
     "github": "https://github.com/choitjddn0311/nook",
     "url": "https://nook-three-opal.vercel.app"
