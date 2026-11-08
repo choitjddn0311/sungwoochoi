@@ -2,7 +2,7 @@
 
 코드를 짜고, 사진과 영상을 찍는 최성우의 포트폴리오 사이트입니다.
 
-**[swdev-coral.vercel.app](https://swdev-coral.vercel.app)**
+**[sungwoochoi.vercel.app](https://sungwoochoi.vercel.app)**
 
 > make life what i dream!
 
@@ -16,10 +16,10 @@
 
 | 메뉴 | 내용 |
 |---|---|
-| [Home](https://swdev-coral.vercel.app) | 첫인상, 최근 작업과 글 |
-| [Work](https://swdev-coral.vercel.app/work) | [개발](https://swdev-coral.vercel.app/work/dev), [사진](https://swdev-coral.vercel.app/work/photo), [영상](https://swdev-coral.vercel.app/work/film) 작업 |
-| [Posts](https://swdev-coral.vercel.app/posts) | 공부하고 경험한 내용을 정리한 글 |
-| [About](https://swdev-coral.vercel.app/about) | 인생의 모토, 목표, 연대기, 연락처 |
+| [Home](https://sungwoochoi.vercel.app) | 첫인상, 최근 작업과 글 |
+| [Work](https://sungwoochoi.vercel.app/work) | [개발](https://sungwoochoi.vercel.app/work/dev), [사진](https://sungwoochoi.vercel.app/work/photo), [영상](https://sungwoochoi.vercel.app/work/film) 작업 |
+| [Posts](https://sungwoochoi.vercel.app/posts) | 공부하고 경험한 내용을 정리한 글 |
+| [About](https://sungwoochoi.vercel.app/about) | 인생의 모토, 목표, 연대기, 연락처 |
 
 ## 디자인
 
