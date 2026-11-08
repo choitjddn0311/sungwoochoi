@@ -3,21 +3,14 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import SectionFooter from "@/components/common/SectionFooter";
 import StackCard from "@/components/common/stackCard";
-import { siteConfig } from "@/lib/siteConfig";
 import { projects } from "@/lib/work";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Development",
   description: "최성우가 진행한 개발 프로젝트 목록입니다.",
-  openGraph: {
-    type: "website",
-    locale: "ko_KR",
-    siteName: siteConfig.name,
-    title: `Development | ${siteConfig.name}`,
-    description: "최성우가 진행한 개발 프로젝트 목록입니다.",
-    url: `${siteConfig.url}/work/dev`,
-  },
-};
+  path: "/work/dev",
+});
 
 // 스택을 추가하려면 해당 분야의 items에 이름을 넣는다.
 const STACKS = [

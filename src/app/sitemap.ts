@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/siteConfig";
+import { photos, videos } from "@/lib/work";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
@@ -25,7 +26,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...["/work", "/work/dev", "/work/photo", "/work/film"].map((path) => ({
+    // 사진·영상 페이지는 작품이 있을 때만 넣는다
+    ...[
+      "/work",
+      "/work/dev",
+      ...(photos.length > 0 ? ["/work/photo"] : []),
+      ...(videos.length > 0 ? ["/work/film"] : []),
+    ].map((path) => ({
       url: `${siteConfig.url}${path}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,

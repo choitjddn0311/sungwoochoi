@@ -5,6 +5,7 @@ import { InterTight, NotoSansKR } from "@/fonts/fonts"
 import Theme from "@/_provider/themeProvider";
 import { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
+import { jsonLd } from "@/lib/seo";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
@@ -51,6 +52,32 @@ export const metadata: Metadata = {
   },
 };
 
+// 검색엔진이 사이트 주인과 사이트를 알아보도록 돕는 구조화 데이터
+const siteData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
+      name: siteConfig.author,
+      alternateName: "Sungwoo Choi",
+      url: siteConfig.url,
+      image: `${siteConfig.url}/img/about_profile.jpg`,
+      jobTitle: "Developer, Photographer, Videographer",
+      affiliation: { "@type": "CollegeOrUniversity", name: "국민대학교" },
+      sameAs: [siteConfig.social.github, siteConfig.social.instagram],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+      inLanguage: "ko",
+      publisher: { "@id": `${siteConfig.url}/#person` },
+    },
+  ],
+};
+
 export default async function RootLayout({
   children,
 }: {
@@ -66,6 +93,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <body>
+          <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(siteData)} />
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Theme>
               <Header locale={locale} />

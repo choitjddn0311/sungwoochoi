@@ -2,21 +2,16 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import SectionFooter from "@/components/common/SectionFooter";
 import VideoFrame from "@/components/work/VideoFrame";
-import { siteConfig } from "@/lib/siteConfig";
 import { videos } from "@/lib/work";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Film",
   description: "최성우의 영상 작업입니다.",
-  openGraph: {
-    type: "website",
-    locale: "ko_KR",
-    siteName: siteConfig.name,
-    title: `Film | ${siteConfig.name}`,
-    description: "최성우의 영상 작업입니다.",
-    url: `${siteConfig.url}/work/film`,
-  },
-};
+  path: "/work/film",
+  // 영상을 넣기 전까지는 검색 결과에서 뺀다
+  index: videos.length > 0,
+});
 
 const Film = async () => {
   const t = await getTranslations("work");
