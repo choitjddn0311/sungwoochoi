@@ -16,9 +16,17 @@
   },
   {
     "title": "환율을 한눈에, mac에서 간단하고 쉽게 dollarBox",
-    "period": "2026.06 ~ 개발중",
+    "period": "2026.06",
     "description": "환율을 확인하고, 그래프에서 환율 추세를 확인할 수 있습니다. 또한 환전 기록을 기록하여 수익률을 확인할 수 있습니다.",
     "techs": ["Swift"],
     "github": "https://github.com/choitjddn0311/dollarBox"
+  },
+  {
+    "title": "Nook",
+    "period": "2026.11 ~ 개발중",
+    "description": "나만의 작은 구석, 개인 다이어리 겸 생각 정리 웹앱입니다. 짧게 정리해 둔 생각을 한 달 뒤, 1년 뒤 같은 날에 다시 꺼내 볼 수 있습니다.",
+    "techs": ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "PWA"],
+    "github": "https://github.com/choitjddn0311/nook",
+    "url": "https://nook-three-opal.vercel.app"
   }
 ]
