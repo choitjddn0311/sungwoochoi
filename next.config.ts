@@ -7,6 +7,10 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  // /write 편집기는 사진을 한 장씩 서버 액션으로 올린다(줄인 사진 기준 수 MB).
+  experimental: {
+    serverActions: { bodySizeLimit: "4mb" },
+  },
   images: {
     // YouTube 영상 썸네일
     remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" }],
