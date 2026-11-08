@@ -30,6 +30,19 @@ export const photos = photosData as Photo[];
 export const videos = videosData as Video[];
 export const projects = projectsData;
 
+export type Project = (typeof projectsData)[number];
+
+/** 언어에 맞는 프로젝트 제목, 설명, 기간. 영어가 없으면 한국어를 쓴다. */
+export const localizeProject = (project: Project, locale: string, inProgressLabel: string) => {
+  const en = locale === "en";
+  return {
+    ...project,
+    title: (en && project.title_en) || project.title,
+    description: (en && project.description_en) || project.description,
+    period: project.period.replace("개발중", inProgressLabel),
+  };
+};
+
 /** 개수를 프레임 번호처럼 두 자리로 표시한다. */
 export const padCount = (count: number) => String(count).padStart(2, "0");
 

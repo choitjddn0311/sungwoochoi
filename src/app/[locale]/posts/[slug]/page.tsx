@@ -2,24 +2,29 @@ import { getPostBySlug, getAllSlugs, getAdjacentPosts, getRelatedPosts } from "@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { mdxComponents } from "@/components/posts/mdxComponents";
 import rehypePrettyCode from "rehype-pretty-code";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { extractToc } from "@/lib/toc";
 import TableOfContents from "@/components/posts/TableOfContents";
 import Comments from "@/components/posts/Comments";
 import PostNav from "@/components/posts/PostNav";
 import RelatedPosts from "@/components/posts/RelatedPosts";
 import { siteConfig } from "@/lib/siteConfig";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import ReadingProgressBar from "@/components/posts/ReadingProgressBar";
 import { jsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+type PostParams = { params: Promise<{ locale: string; slug: string }> };
+
+// 글은 한국어로만 있으므로 영어 주소(/en/posts/...)도 한국어 원문을 대표 주소로 가리킨다
+export async function generateMetadata({ params }: PostParams): Promise<Metadata> {
   const { slug } = await params;
   const { meta } = getPostBySlug(slug);
+  const image = { url: `/posts/${slug}/opengraph-image`, width: 1200, height: 630, alt: meta.title };
   return {
     title: meta.title,
     description: meta.summary,
@@ -28,6 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       type: "article",
       locale: "ko_KR",
+      images: [image],
       siteName: siteConfig.name,
       title: meta.title,
       description: meta.summary,
@@ -39,12 +45,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: "summary_large_image",
       title: meta.title,
       description: meta.summary,
+      images: [image.url],
     },
   };
 }
 
-const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
-  const { slug } = await params;
+const PostPage = async ({ params }: PostParams) => {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
   const { meta, content } = getPostBySlug(slug);
   const tocItems = extractToc(content);
   const { prev, next } = getAdjacentPosts(slug);
@@ -68,7 +76,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(articleData)} />
       <ReadingProgressBar />
-      <article>
+      <article lang="ko">
         <header className="wrap flex flex-col gap-4.5 pt-[clamp(24px,5vw,64px)]">
           <Link href="/posts" className="tap tap-start meta self-start text-muted transition-colors duration-150 hover:text-foreground">
             {t("backToList")}
@@ -78,6 +86,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
             <time dateTime={meta.date}>{meta.date}</time>
             {meta.tags.length > 0 && <span>{meta.tags.join(" / ")}</span>}
           </p>
+          {locale !== "ko" && <p lang="en" className="meta text-muted">{t("koreanOnly")}</p>}
         </header>
         <div className="gap-m" />
 

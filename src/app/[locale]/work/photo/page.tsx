@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
 import { photos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Photo",
-  description: "최성우의 사진 작업입니다.",
-  path: "/work/photo",
-  // 사진을 넣기 전까지는 검색 결과에서 뺀다
-  index: photos.length > 0,
-});
+type PageProps = { params: Promise<{ locale: string }> };
 
-const Photo = async () => {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "photo", path: "/work/photo",
+    // 작품을 넣기 전까지는 검색 결과에서 뺀다
+    index: photos.length > 0 });
+}
+
+const Photo = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("work");
 
   return (

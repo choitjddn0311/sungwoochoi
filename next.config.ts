@@ -13,7 +13,10 @@ const nextConfig: NextConfig = {
   },
   // 기존 주소로 들어온 방문자와 검색 결과를 새 주소로 보낸다.
   async redirects() {
-    return [{ source: "/projects", destination: "/work/dev", permanent: true }];
+    return [
+      { source: "/projects", destination: "/work/dev", permanent: true },
+      { source: "/en/projects", destination: "/en/work/dev", permanent: true },
+    ];
   },
 };
 

@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { FrameItem } from "@/components/common/Frame";
 import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
 import PostRow from "@/components/posts/PostRow";
 import { getAllPosts } from "@/lib/posts";
-import { siteConfig } from "@/lib/siteConfig";
-import { getVideoThumbnail, padCount, photos, projects, videos } from "@/lib/work";
+import { getVideoThumbnail, localizeProject, padCount, photos, projects, videos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({ title: siteConfig.name, description: siteConfig.description, path: "/" });
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "home", path: "/" });
+}
 
 const ROLES = ["developer", "photographer", "videographer"];
 
@@ -27,7 +31,9 @@ const interleave = (groups: FrameItem[][]) => {
   return result;
 };
 
-const Home = async () => {
+const Home = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("home");
   const w = await getTranslations("work");
   const allPosts = getAllPosts();
@@ -39,7 +45,7 @@ const Home = async () => {
       href: "/work/photo",
       image: { src: photo.src, alt: photo.alt, position: photo.position },
     })),
-    projects.map((project) => ({
+    projects.map((item) => localizeProject(item, locale, w("inProgress"))).map((project) => ({
       key: `project-${project.title}`,
       title: project.title,
       eyebrow: `${w("dev")} · ${project.period}`,

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
 
 const REPO = "choitjddn0311/swdev";
 
@@ -10,6 +11,7 @@ const Comments = () => {
   const ref = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const t = useTranslations("post");
+  const pathname = usePathname();
 
   const utterancesTheme = resolvedTheme === "dark" ? "github-dark" : "github-light";
 
@@ -20,7 +22,8 @@ const Comments = () => {
     const script = document.createElement("script");
     script.src = "https://utteranc.es/client.js";
     script.setAttribute("repo", REPO);
-    script.setAttribute("issue-term", "pathname");
+    // 한국어 주소의 pathname과 같은 값(posts/slug)을 써서 /en 주소에서도 같은 댓글을 보여 준다
+    script.setAttribute("issue-term", pathname.replace(/^\//, ""));
     script.setAttribute("theme", utterancesTheme);
     script.setAttribute("crossorigin", "anonymous");
     script.async = true;

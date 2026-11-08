@@ -80,7 +80,8 @@
     "relatedPosts": "Related Posts",
     "comments": "Comments",
     "toc": "Contents",
-    "postNav": "Previous and next posts"
+    "postNav": "Previous and next posts",
+    "koreanOnly": "This post is written in Korean."
   },
   "about": {
     "aboutMe": "About Me",
@@ -142,7 +143,8 @@
     "filmEmpty": "Preparing films.",
     "emptyHint": "New work will appear here soon.",
     "photoStripLabel": "Photo frames",
-    "play": "Play {title}"
+    "play": "Play {title}",
+    "inProgress": "In progress"
   },
   "strip": {
     "previous": "Previous frame",
@@ -156,5 +158,36 @@
     "retry": "Try again",
     "backToHome": "Back to home",
     "loading": "Loading"
+  },
+  "meta": {
+    "siteDescription": "Portfolio of Sungwoo Choi, a developer who also shoots photos and videos.",
+    "home": {
+      "title": "Sungwoo Choi",
+      "description": "Portfolio of Sungwoo Choi, a developer who also shoots photos and videos."
+    },
+    "work": {
+      "title": "Work",
+      "description": "Development, photo and video work by Sungwoo Choi."
+    },
+    "dev": {
+      "title": "Development",
+      "description": "Development projects by Sungwoo Choi."
+    },
+    "photo": {
+      "title": "Photo",
+      "description": "Photography by Sungwoo Choi."
+    },
+    "film": {
+      "title": "Film",
+      "description": "Video work by Sungwoo Choi."
+    },
+    "posts": {
+      "title": "Posts",
+      "description": "Blog posts by Sungwoo Choi on the web, Linux, AI and more. Posts are written in Korean."
+    },
+    "about": {
+      "title": "About",
+      "description": "About Sungwoo Choi, a developer who also shoots photos and videos."
+    }
   }
 }

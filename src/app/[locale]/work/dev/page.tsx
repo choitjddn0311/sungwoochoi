@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import SectionFooter from "@/components/common/SectionFooter";
 import StackCard from "@/components/common/stackCard";
-import { projects } from "@/lib/work";
+import { localizeProject, projects } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Development",
-  description: "최성우가 진행한 개발 프로젝트 목록입니다.",
-  path: "/work/dev",
-});
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "dev", path: "/work/dev" });
+}
 
 // 스택을 추가하려면 해당 분야의 items에 이름을 넣는다.
 const STACKS = [
@@ -37,7 +38,9 @@ const LICENSES = [
 
 const LINK = "underline underline-offset-4 hover:no-underline";
 
-const Development = async () => {
+const Development = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("projects");
   const w = await getTranslations("work");
   const h = await getTranslations("home");
@@ -49,7 +52,7 @@ const Development = async () => {
 
       <div className="wrap">
         {projects.length === 0 && <p className="text-muted">{t("noProjects")}</p>}
-        {projects.map((project) => (
+        {projects.map((item) => localizeProject(item, locale, w("inProgress"))).map((project) => (
           <article
             key={project.title}
             className="grid grid-cols-1 gap-x-8 gap-y-3.5 border-t border-line py-[clamp(20px,3vw,36px)] min-[681px]:grid-cols-[7fr_5fr]"

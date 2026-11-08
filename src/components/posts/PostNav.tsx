@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { PostMeta } from "@/lib/posts";
 import { getTranslations } from "next-intl/server";
 

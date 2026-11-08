@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { padCount, photos, projects, videos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Work",
-  description: "최성우의 개발, 사진, 영상 작업입니다.",
-  path: "/work",
-});
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "work", path: "/work" });
+}
 
 const ROW = "invert-row flex items-baseline justify-between gap-4 py-[clamp(14px,2vw,26px)]";
 
-const Work = async () => {
+const Work = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("work");
 
   return (

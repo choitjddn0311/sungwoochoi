@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { PostMeta } from "@/lib/posts";
 
 /** 큰 제목으로 보여 주는 글 목록 한 줄 */

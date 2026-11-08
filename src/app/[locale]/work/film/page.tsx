@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import SectionFooter from "@/components/common/SectionFooter";
 import VideoFrame from "@/components/work/VideoFrame";
 import { videos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Film",
-  description: "최성우의 영상 작업입니다.",
-  path: "/work/film",
-  // 영상을 넣기 전까지는 검색 결과에서 뺀다
-  index: videos.length > 0,
-});
+type PageProps = { params: Promise<{ locale: string }> };
 
-const Film = async () => {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "film", path: "/work/film",
+    // 작품을 넣기 전까지는 검색 결과에서 뺀다
+    index: videos.length > 0 });
+}
+
+const Film = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("work");
 
   return (
