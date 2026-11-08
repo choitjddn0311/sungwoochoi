@@ -1,7 +1,13 @@
 import "../globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { InterTight, NotoSansKR } from "@/fonts/fonts"
+// 글꼴은 패키지에 들어 있는 파일을 쓴다. 빌드 때 Google Fonts를 받아 오지 않아서
+// Google이 가끔 다른 형식의 주소를 돌려줄 때 빌드가 실패하던 문제가 없다.
+import "@fontsource/inter-tight/latin-300.css";
+import "@fontsource/inter-tight/latin-400.css";
+import "@fontsource/noto-sans-kr/200.css";
+import "@fontsource/noto-sans-kr/300.css";
+import "@fontsource/noto-sans-kr/400.css";
 import Theme from "@/_provider/themeProvider";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -90,11 +96,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const messages = await getMessages();
 
   return (
-      <html
-        lang={locale}
-        className={`${InterTight.variable} ${NotoSansKR.variable}`}
-        suppressHydrationWarning
-      >
+      <html lang={locale} suppressHydrationWarning>
         <body>
           <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(siteData(locale))} />
           <NextIntlClientProvider locale={locale} messages={messages}>

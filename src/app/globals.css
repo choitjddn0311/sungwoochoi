@@ -9,6 +9,9 @@
   --muted: #595959;
   --line: #d9d9d9;
   --surface: #f2f2f2;
+  /* 글꼴: @fontsource 패키지(layout.tsx에서 불러옴) */
+  --ff-latin: "Inter Tight";
+  --ff-kr: "Noto Sans KR";
 }
 
 .dark {
