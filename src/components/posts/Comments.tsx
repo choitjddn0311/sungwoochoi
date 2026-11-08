@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 
-const REPO = "choitjddn0311/swdev";
+const REPO = "choitjddn0311/sungwoochoi";
 
 const Comments = () => {
   const ref = useRef<HTMLDivElement>(null);

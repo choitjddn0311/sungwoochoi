@@ -23,7 +23,7 @@ export const writeConfig = {
     return env("WRITE_OWNER");
   },
   get repo() {
-    return process.env.WRITE_REPO ?? "choitjddn0311/swdev";
+    return process.env.WRITE_REPO ?? "choitjddn0311/sungwoochoi";
   },
   get branch() {
     return process.env.WRITE_BRANCH ?? "master";
