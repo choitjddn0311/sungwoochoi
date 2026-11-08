@@ -7,7 +7,7 @@
     "description_en": "A personal portfolio and dev blog built with Next.js and MDX.",
     "techs": ["Next.js", "TypeScript", "Tailwind CSS", "MDX"],
     "github": "https://github.com/choitjddn0311/sungwoochoi",
-    "url": "https://swdev-coral.vercel.app"
+    "url": "https://sungwoochoi.vercel.app"
   },
   {
     "title": "나의 감정을 한눈에 볼수있는 그림일기",
