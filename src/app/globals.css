@@ -51,6 +51,14 @@ body {
   outline-offset: 2px;
 }
 
+/* 입력칸은 마우스로 눌러도 :focus-visible이 걸려 테두리가 생기므로 테두리를 뺀다.
+   링크와 버튼은 키보드로 이동할 때만 테두리가 보이므로 그대로 둔다. */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
 @layer components {
   /* 페이지 공통 폭과 좌우 여백 */
   .wrap {
