@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { siteConfig } from "@/lib/siteConfig";
+import FooterRights from "@/components/layout/FooterRights";
 
 const Footer = async () => {
     const t = await getTranslations("footer");
@@ -15,7 +16,7 @@ const Footer = async () => {
         <footer className="w-full bg-background text-muted">
             <div className="wrap">
                 <div className="meta flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t border-line py-3">
-                    <p>{t("rights")}</p>
+                    <FooterRights text={t("rights")} />
                     <p>{t("roles")}</p>
                     <ul className="flex gap-4">
                         {links.map((link) => (

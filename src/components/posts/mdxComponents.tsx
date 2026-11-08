@@ -70,6 +70,14 @@ export const mdxComponents: MDXComponents = {
     <pre className="overflow-x-auto my-6 p-4 text-sm leading-relaxed [&>code]:bg-transparent [&>code]:p-0 [&>code]:text-[1em]" {...props} />
   ),
   hr: () => <hr className="my-10 border-line" />,
+  // 표는 넓으면 표 안에서만 가로로 스크롤한다
+  table: (props) => (
+    <div className="my-6 overflow-x-auto">
+      <table className="w-full border-collapse text-[15px]" {...props} />
+    </div>
+  ),
+  th: (props) => <th className="border-b border-foreground py-2 pr-4 text-left align-bottom font-normal" {...props} />,
+  td: (props) => <td className="border-b border-line py-2 pr-4 align-top font-light" {...props} />,
   img: (props) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img className="my-6 max-w-full" alt={props.alt ?? ""} {...props} />

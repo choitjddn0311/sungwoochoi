@@ -1,7 +1,7 @@
 import { getPostBySlug, getAllSlugs, getAdjacentPosts, getRelatedPosts } from "@/lib/posts";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { mdxComponents } from "@/components/posts/mdxComponents";
-import rehypePrettyCode from "rehype-pretty-code";
+import { mdxOptions } from "@/lib/mdx";
 import { Link } from "@/i18n/navigation";
 import { extractToc } from "@/lib/toc";
 import TableOfContents from "@/components/posts/TableOfContents";
@@ -95,11 +95,7 @@ const PostPage = async ({ params }: PostParams) => {
             <MDXRemote
               source={content}
               components={mdxComponents}
-              options={{
-                mdxOptions: {
-                  rehypePlugins: [[rehypePrettyCode, { theme: "github-dark" }]],
-                },
-              }}
+              options={mdxOptions}
             />
           </div>
           <aside className="article-toc">
