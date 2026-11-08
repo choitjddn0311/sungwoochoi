@@ -1,7 +1,7 @@
 [
   {
-    "title": "sungwoo dev blog",
-    "title_en": "sungwoo dev blog",
+    "title": "SungwooChoi",
+    "title_en": "SungwooChoi",
     "period": "2026.02 ~ 개발중",
     "description": "Next.js와 MDX로 만든 개인 포트폴리오 겸 개발 블로그입니다.",
     "description_en": "A personal portfolio and dev blog built with Next.js and MDX.",
