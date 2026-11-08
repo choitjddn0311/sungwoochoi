@@ -3,19 +3,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
 import { getTranslations } from "next-intl/server";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: "개발하고, 사진과 영상을 찍는 최성우를 소개합니다.",
-  openGraph: {
-    type: "website",
-    locale: "ko_KR",
-    siteName: siteConfig.name,
-    title: `About | ${siteConfig.name}`,
-    description: "개발하고, 사진과 영상을 찍는 최성우를 소개합니다.",
-    url: `${siteConfig.url}/about`,
-  },
-};
+  path: "/about",
+});
 
 const HASH_TAGS = ["developer", "photographer", "videographer", "travel the world", "do my dream"];
 

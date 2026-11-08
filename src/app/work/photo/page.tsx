@@ -3,21 +3,16 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
-import { siteConfig } from "@/lib/siteConfig";
 import { photos } from "@/lib/work";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Photo",
   description: "최성우의 사진 작업입니다.",
-  openGraph: {
-    type: "website",
-    locale: "ko_KR",
-    siteName: siteConfig.name,
-    title: `Photo | ${siteConfig.name}`,
-    description: "최성우의 사진 작업입니다.",
-    url: `${siteConfig.url}/work/photo`,
-  },
-};
+  path: "/work/photo",
+  // 사진을 넣기 전까지는 검색 결과에서 뺀다
+  index: photos.length > 0,
+});
 
 const Photo = async () => {
   const t = await getTranslations("work");

@@ -11,6 +11,7 @@ import RelatedPosts from "@/components/posts/RelatedPosts";
 import { siteConfig } from "@/lib/siteConfig";
 import { getTranslations } from "next-intl/server";
 import ReadingProgressBar from "@/components/posts/ReadingProgressBar";
+import { jsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: meta.title,
     description: meta.summary,
     keywords: meta.tags,
+    alternates: { canonical: `/posts/${slug}` },
     openGraph: {
       type: "article",
       locale: "ko_KR",
@@ -49,8 +51,22 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const relatedPosts = getRelatedPosts(slug, meta.tags);
   const t = await getTranslations("post");
 
+  const articleData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: meta.title,
+    description: meta.summary,
+    datePublished: meta.date,
+    keywords: meta.tags.join(", "),
+    inLanguage: "ko",
+    url: `${siteConfig.url}/posts/${slug}`,
+    mainEntityOfPage: `${siteConfig.url}/posts/${slug}`,
+    author: { "@type": "Person", name: siteConfig.author, url: `${siteConfig.url}/about` },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(articleData)} />
       <ReadingProgressBar />
       <article>
         <header className="wrap flex flex-col gap-4.5 pt-[clamp(24px,5vw,64px)]">

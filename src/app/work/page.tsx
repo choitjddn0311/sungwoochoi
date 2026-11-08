@@ -1,21 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { siteConfig } from "@/lib/siteConfig";
 import { padCount, photos, projects, videos } from "@/lib/work";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Work",
   description: "최성우의 개발, 사진, 영상 작업입니다.",
-  openGraph: {
-    type: "website",
-    locale: "ko_KR",
-    siteName: siteConfig.name,
-    title: `Work | ${siteConfig.name}`,
-    description: "최성우의 개발, 사진, 영상 작업입니다.",
-    url: `${siteConfig.url}/work`,
-  },
-};
+  path: "/work",
+});
 
 const ROW = "invert-row flex items-baseline justify-between gap-4 py-[clamp(14px,2vw,26px)]";
 

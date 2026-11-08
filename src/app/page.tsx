@@ -9,19 +9,9 @@ import PostRow from "@/components/posts/PostRow";
 import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/siteConfig";
 import { getVideoThumbnail, padCount, photos, projects, videos } from "@/lib/work";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: { absolute: siteConfig.name },
-  description: siteConfig.description,
-  openGraph: {
-    type: "website",
-    locale: "ko_KR",
-    siteName: siteConfig.name,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    url: siteConfig.url,
-  },
-};
+export const metadata: Metadata = pageMetadata({ title: siteConfig.name, description: siteConfig.description, path: "/" });
 
 const ROLES = ["developer", "photographer", "videographer"];
 
