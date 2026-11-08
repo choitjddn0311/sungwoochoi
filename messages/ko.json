@@ -80,7 +80,8 @@
     "relatedPosts": "연관 글",
     "comments": "댓글",
     "toc": "목차",
-    "postNav": "이전 글과 다음 글"
+    "postNav": "이전 글과 다음 글",
+    "koreanOnly": ""
   },
   "about": {
     "aboutMe": "자기소개",
@@ -142,7 +143,8 @@
     "filmEmpty": "영상을 준비하고 있어요.",
     "emptyHint": "작품은 곧 이곳에 올라옵니다.",
     "photoStripLabel": "사진 프레임",
-    "play": "{title} 재생"
+    "play": "{title} 재생",
+    "inProgress": "개발중"
   },
   "strip": {
     "previous": "이전 프레임",
@@ -156,5 +158,36 @@
     "retry": "다시 시도",
     "backToHome": "홈으로 돌아가기",
     "loading": "불러오는 중"
+  },
+  "meta": {
+    "siteDescription": "개발하고, 사진과 영상을 찍는 최성우의 포트폴리오입니다.",
+    "home": {
+      "title": "Sungwoo Choi",
+      "description": "개발하고, 사진과 영상을 찍는 최성우의 포트폴리오입니다."
+    },
+    "work": {
+      "title": "Work",
+      "description": "최성우의 개발, 사진, 영상 작업입니다."
+    },
+    "dev": {
+      "title": "Development",
+      "description": "최성우가 진행한 개발 프로젝트 목록입니다."
+    },
+    "photo": {
+      "title": "Photo",
+      "description": "최성우의 사진 작업입니다."
+    },
+    "film": {
+      "title": "Film",
+      "description": "최성우의 영상 작업입니다."
+    },
+    "posts": {
+      "title": "Posts",
+      "description": "최성우의 블로그 글 목록입니다. Web, Linux, AI 등 다양한 주제를 다룹니다."
+    },
+    "about": {
+      "title": "About",
+      "description": "개발하고, 사진과 영상을 찍는 최성우를 소개합니다."
+    }
   }
 }

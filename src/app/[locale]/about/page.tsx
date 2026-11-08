@@ -1,19 +1,22 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/siteConfig";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
-  title: "About",
-  description: "개발하고, 사진과 영상을 찍는 최성우를 소개합니다.",
-  path: "/about",
-});
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "about", path: "/about" });
+}
 
 const HASH_TAGS = ["developer", "photographer", "videographer", "travel the world", "do my dream"];
 
-const About = async () => {
+const About = async ({ params }: PageProps) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("about");
   const h = await getTranslations("home");
 

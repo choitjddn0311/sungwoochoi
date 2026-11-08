@@ -1,30 +1,38 @@
 [
   {
     "title": "sungwoo dev blog",
+    "title_en": "sungwoo dev blog",
     "period": "2026.02 ~ 개발중",
     "description": "Next.js와 MDX로 만든 개인 포트폴리오 겸 개발 블로그입니다.",
+    "description_en": "A personal portfolio and dev blog built with Next.js and MDX.",
     "techs": ["Next.js", "TypeScript", "Tailwind CSS", "MDX"],
     "github": "https://github.com/choitjddn0311/swdev",
     "url": "https://swdev-coral.vercel.app"
   },
   {
     "title": "나의 감정을 한눈에 볼수있는 그림일기",
+    "title_en": "A picture diary that shows my feelings at a glance",
     "period": "2026.05 ~ 2026.06",
     "description": "react와 python flask를 활용한 그림일기 형태의 프로젝트입니다. image generation api를 활용해 일기에 관해 그림도 그려줍니다.",
+    "description_en": "A picture-diary project built with React and Python Flask. It uses an image generation API to draw a picture for each diary entry.",
     "techs": ["React", "Python", "Flask", "Sqlite", "api"],
     "github": "https://github.com/choitjddn0311/softwareThinkingProject"
   },
   {
     "title": "환율을 한눈에, mac에서 간단하고 쉽게 dollarBox",
+    "title_en": "dollarBox: exchange rates at a glance, simple and easy on Mac",
     "period": "2026.06",
     "description": "환율을 확인하고, 그래프에서 환율 추세를 확인할 수 있습니다. 또한 환전 기록을 기록하여 수익률을 확인할 수 있습니다.",
+    "description_en": "Check exchange rates and follow their trends on charts. You can also log your currency exchanges to see your returns.",
     "techs": ["Swift"],
     "github": "https://github.com/choitjddn0311/dollarBox"
   },
   {
     "title": "Nook",
+    "title_en": "Nook",
     "period": "2026.11 ~ 개발중",
     "description": "나만의 작은 구석, 개인 다이어리 겸 생각 정리 웹앱입니다. 짧게 정리해 둔 생각을 한 달 뒤, 1년 뒤 같은 날에 다시 꺼내 볼 수 있습니다.",
+    "description_en": "My own little corner, a personal diary and thought-organizing web app. The thoughts you jot down come back a month or a year later on the same day.",
     "techs": ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "PWA"],
     "github": "https://github.com/choitjddn0311/nook",
     "url": "https://nook-three-opal.vercel.app"

@@ -1,20 +1,21 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { setLocale } from "@/actions/locale";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 const LanguageToggle = ({ currentLocale }: { currentLocale: string }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
   const t = useTranslations("a11y");
 
+  // 같은 페이지의 다른 언어 주소로 이동한다. 검색어와 태그 같은 쿼리도 유지한다.
   const toggle = () => {
     const next = currentLocale === "ko" ? "en" : "ko";
-    startTransition(async () => {
-      await setLocale(next);
-      router.refresh();
+    const search = window.location.search;
+    startTransition(() => {
+      router.replace(`${pathname}${search}`, { locale: next });
     });
   };
 

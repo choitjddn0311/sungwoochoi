@@ -1,23 +1,26 @@
 import { getAllPosts, getTagList } from "@/lib/posts";
 import PostRow from "@/components/posts/PostRow";
 import PostsFilter from "@/components/posts/PostsFilter";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { padCount } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = pageMetadata({
-  title: "Posts",
-  description: "최성우의 블로그 글 목록입니다. Web, Linux, AI 등 다양한 주제를 다룹니다.",
-  path: "/posts",
-});
+type PageProps = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return pageMetadata({ locale, page: "posts", path: "/posts" });
+}
 
 const POSTS_PER_PAGE = 12;
 const PAGE_LINK = "tap meta px-2 transition-colors duration-150 hover:text-foreground";
 
-const Posts = async ({ searchParams }: { searchParams: Promise<{ page?: string; q?: string; tag?: string }> }) => {
+const Posts = async ({ params, searchParams }: PageProps & { searchParams: Promise<{ page?: string; q?: string; tag?: string }> }) => {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("posts");
   const { page, q, tag } = await searchParams;
   const query = q?.trim() ?? "";
