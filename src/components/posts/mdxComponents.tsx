@@ -59,9 +59,11 @@ export const mdxComponents: MDXComponents = {
   ul: (props) => <ul className="list-disc my-4 space-y-1 pl-6 marker:text-muted" {...props} />,
   ol: (props) => <ol className="list-decimal my-4 space-y-1 pl-6 marker:text-muted" {...props} />,
   li: (props) => <li {...props} />,
+  // 인용구: 본문 크기 그대로, 파비콘의 뷰파인더 꺾쇠를 왼쪽 위와 오른쪽 아래에 둔다.
+  // 폭은 글 길이에 맞춰 짧은 인용구에서도 꺾쇠가 글 가까이 붙게 한다.
   blockquote: (props) => (
     <blockquote
-      className="font-kr font-light text-[clamp(21px,2.3vw,27px)] leading-normal tracking-[-0.02em] my-8 [&>p]:my-2"
+      className="relative my-7 w-fit max-w-full px-[22px] py-3.5 [&>p]:my-1.5 before:absolute before:top-0 before:left-0 before:size-3.5 before:border-t-2 before:border-l-2 before:border-foreground before:content-[''] after:absolute after:right-0 after:bottom-0 after:size-3.5 after:border-r-2 after:border-b-2 after:border-foreground after:content-['']"
       {...props}
     />
   ),
