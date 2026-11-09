@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getOwnerSession } from "@/lib/write/session";
-import { loadStoredPost } from "@/lib/write/github";
+import { WriteError, loadStoredPost } from "@/lib/write/github";
+import { redirect } from "@/i18n/navigation";
 import { SLUG_PATTERN, postPath, todayKst } from "@/lib/write/post";
 import Editor, { type EditorInitial } from "@/components/write/Editor";
 
@@ -35,7 +36,14 @@ export default async function WriteEditPage({ params, searchParams }: Props) {
     };
   } else {
     if (!SLUG_PATTERN.test(slug)) notFound();
-    const stored = await loadStoredPost(session.token, postPath(slug, draft === "1"));
+    let stored: Awaited<ReturnType<typeof loadStoredPost>>;
+    try {
+      stored = await loadStoredPost(session.token, postPath(slug, draft === "1"));
+    } catch (e) {
+      // 토큰이 무효면 목록으로 보내 다시 로그인 안내를 보여 준다.
+      if (e instanceof WriteError && e.message === "AUTH") redirect({ href: "/write", locale });
+      throw e;
+    }
     if (!stored) notFound();
     initial = {
       slug: stored.slug,

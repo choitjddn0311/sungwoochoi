@@ -20,6 +20,8 @@ function client(token: string): Fetcher {
         ...(init?.body ? { "Content-Type": "application/json" } : {}),
       },
     });
+    // 쿠키에 든 토큰이 GitHub에서 무효가 된 경우(권한 취소, 오래된 토큰 폐기 등)
+    if (response.status === 401) throw new WriteError("AUTH");
     if (!response.ok) {
       const detail = await response.text();
       const error = new WriteError(`GitHub 요청 실패 (${response.status}): ${detail.slice(0, 200)}`);

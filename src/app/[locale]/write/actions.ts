@@ -7,6 +7,8 @@ import { requireOwner } from "@/lib/write/session";
 import { WriteError, commitChanges, createImageBlob, type CommitChange } from "@/lib/write/github";
 import { IMAGES_DIR, SLUG_PATTERN, postPath, serializePost, type PostFields } from "@/lib/write/post";
 
+const AUTH_MESSAGE = "로그인이 끝났어요. 내용은 이 기기에 보관돼 있으니 다시 로그인한 뒤 저장해 주세요.";
+
 // 미리보기: 글 상세 페이지와 같은 MDX 설정과 컴포넌트로 그린다.
 export async function previewAction(source: string) {
   await requireOwner();
@@ -26,6 +28,7 @@ export async function uploadImageAction(base64: string) {
   try {
     return { ok: true as const, sha: await createImageBlob(token, base64) };
   } catch (error) {
+    if (error instanceof WriteError && error.message === "AUTH") return { ok: false as const, error: AUTH_MESSAGE };
     return { ok: false as const, error: error instanceof Error ? error.message : "사진을 올리지 못했어요." };
   }
 }
@@ -50,7 +53,7 @@ export async function saveAction(input: SaveInput): Promise<SaveResult> {
   try {
     ({ token } = await requireOwner());
   } catch {
-    return { ok: false, reason: "auth", error: "로그인이 끝났어요. 내용은 이 기기에 보관돼 있으니 다시 로그인한 뒤 저장해 주세요." };
+    return { ok: false, reason: "auth", error: AUTH_MESSAGE };
   }
 
   const { slug, fields } = input;
@@ -101,6 +104,7 @@ export async function saveAction(input: SaveInput): Promise<SaveResult> {
       message: verb,
     };
   } catch (error) {
+    if (error instanceof WriteError && error.message === "AUTH") return { ok: false, reason: "auth", error: AUTH_MESSAGE };
     if (error instanceof WriteError && error.message === "CONFLICT") {
       return {
         ok: false,
