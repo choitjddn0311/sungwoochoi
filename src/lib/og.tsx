@@ -22,6 +22,8 @@ function interTight(weight: 300 | 400): OgFont {
 
 // Noto Sans KR은 글자 범위별로 120여 개 파일로 나뉘어 있다.
 // 패키지 CSS의 unicode-range를 읽어 text에 쓰인 글자가 들어 있는 파일만 고른다.
+// satori는 같은 이름의 글꼴이 여럿이면 첫 파일 밖의 글자를 두껍게 그린다(최성우에서 성우만 두꺼워짐).
+// 그래서 파일마다 "Noto Sans KR 117"처럼 다른 이름을 붙이고, fontFamily에 모두 나열한다.
 function notoSansKR(weight: Weight, text: string): OgFont[] {
   const dir = fontsource("noto-sans-kr");
   const css = readFileSync(join(dir, `${weight}.css`), "utf8");
@@ -40,14 +42,20 @@ function notoSansKR(weight: Weight, text: string): OgFont[] {
       for (const c of codes) if (c >= lo && c <= hi) return true;
       return false;
     });
-    if (covers) fonts.push({ name: OG_KR, data: readFileSync(join(dir, file)), weight, style: "normal" });
+    const subset = file.match(/noto-sans-kr-(.+)-\d+-normal\.woff$/)?.[1] ?? file;
+    if (covers) fonts.push({ name: `${OG_KR} ${subset}`, data: readFileSync(join(dir, file)), weight, style: "normal" });
   }
   return fonts;
 }
 
-/** 이미지에 들어가는 글자(krText)에 맞춰 Inter Tight 300·400과 Noto Sans KR을 불러온다. */
-export function ogFonts(krText: string, krWeights: Weight[]): OgFont[] {
-  return [interTight(300), interTight(400), ...krWeights.flatMap((w) => notoSansKR(w, krText))];
+/**
+ * 이미지에 들어가는 글자(krText)에 맞춰 Inter Tight 300·400과 Noto Sans KR을 불러온다.
+ * krFamily는 한글 글자에 쓸 fontFamily 값이다(고른 파일 이름을 모두 나열).
+ */
+export function ogFonts(krText: string, krWeights: Weight[]) {
+  const kr = krWeights.flatMap((w) => notoSansKR(w, krText));
+  const krFamily = [...new Set(kr.map((font) => font.name)), OG_LATIN].join(", ");
+  return { fonts: [interTight(300), interTight(400), ...kr], krFamily };
 }
 
 /** 파비콘(src/favicon.svg)의 뷰파인더 슬래시. 배경 사각형은 이미지 배경이 검정이라 뺐다. */

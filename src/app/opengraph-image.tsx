@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/siteConfig";
-import { OG_KR, OG_LATIN, OG_SIZE, OgMark, ogFonts } from "@/lib/og";
+import { OG_LATIN, OG_SIZE, OgMark, ogFonts } from "@/lib/og";
 
 export const runtime = "nodejs";
 export const alt = "Sungwoo Choi";
@@ -10,6 +10,7 @@ export const contentType = "image/png";
 // 사이트 첫 화면(SUNGWOO— CHOI / 최성우)을 그대로 옮긴 기본 공유 이미지
 export default function Image() {
   const kr = "최성우";
+  const { fonts, krFamily } = ogFonts(kr, [200]);
 
   return new ImageResponse(
     (
@@ -52,7 +53,7 @@ export default function Image() {
           <div
             style={{
               display: "flex",
-              fontFamily: OG_KR,
+              fontFamily: krFamily,
               fontSize: "96px",
               fontWeight: 200,
               letterSpacing: "-0.05em",
@@ -66,7 +67,7 @@ export default function Image() {
     ),
     {
       ...size,
-      fonts: ogFonts(kr, [200]),
+      fonts,
     }
   );
 }
