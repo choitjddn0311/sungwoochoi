@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getPostBySlug, getAllSlugs } from "@/lib/posts";
-import { OG_KR, OG_LATIN, OG_SIZE, OgMark, ogFonts } from "@/lib/og";
+import { OG_LATIN, OG_SIZE, OgMark, ogFonts } from "@/lib/og";
 
 export const runtime = "nodejs";
 export const size = OG_SIZE;
@@ -25,6 +25,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const { slug } = await params;
   const { meta } = getPostBySlug(slug);
   const tags = meta.tags.slice(0, 3).join("  /  ");
+  const { fonts, krFamily } = ogFonts(meta.title + tags, [300]);
 
   return new ImageResponse(
     (
@@ -52,7 +53,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div
           style={{
             display: "flex",
-            fontFamily: OG_KR,
+            fontFamily: krFamily,
             fontSize: titleSize(meta.title),
             fontWeight: 300,
             letterSpacing: "-0.04em",
@@ -63,12 +64,12 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           {meta.title}
         </div>
 
-        <div style={{ display: "flex", fontFamily: OG_KR, fontSize: "26px", color: "#a3a3a3", fontWeight: 300 }}>{tags}</div>
+        <div style={{ display: "flex", fontFamily: krFamily, fontSize: "26px", color: "#a3a3a3", fontWeight: 300 }}>{tags}</div>
       </div>
     ),
     {
       ...size,
-      fonts: ogFonts(meta.title + tags, [300]),
+      fonts,
     }
   );
 }
