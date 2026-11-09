@@ -6,7 +6,9 @@ import type { StoredPost } from "@/lib/write/github";
 
 type Filter = "all" | "published" | "draft";
 
-export default function WriteList({ posts, error, login }: { posts: StoredPost[]; error: string | null; login: string }) {
+type Props = { posts: StoredPost[]; error: string | null; authExpired: boolean; login: string };
+
+export default function WriteList({ posts, error, authExpired, login }: Props) {
   const [filter, setFilter] = useState<Filter>("all");
   const drafts = posts.filter((post) => post.draft).length;
   const shown = posts.filter((post) => filter === "all" || (filter === "draft" ? post.draft : !post.draft));
@@ -46,6 +48,17 @@ export default function WriteList({ posts, error, login }: { posts: StoredPost[]
           </button>
         ))}
       </div>
+
+      {authExpired && (
+        <div role="alert" className="flex flex-wrap items-center justify-between gap-4 border border-line p-4 text-[15px]">
+          <p className="text-muted">GitHub 로그인이 만료됐어요. 로그아웃한 뒤 다시 로그인해 주세요.</p>
+          <form action="/api/write/logout" method="post">
+            <button type="submit" className="tap bg-foreground px-5 text-background">
+              로그아웃
+            </button>
+          </form>
+        </div>
+      )}
 
       {error && (
         <p role="alert" className="border border-line p-4 text-[15px] text-muted">
