@@ -136,7 +136,7 @@ const Home = async ({ params }: PageProps) => {
       <div className="gap-l" />
       <div className="wrap">
         {allPosts.slice(0, 3).map((post) => (
-          <PostRow key={post.slug} post={post} />
+          <PostRow key={post.slug} post={post} compact />
         ))}
       </div>
       <div className="gap-m" />
