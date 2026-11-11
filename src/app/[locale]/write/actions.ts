@@ -4,7 +4,7 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import { mdxComponents } from "@/components/posts/mdxComponents";
 import { mdxOptions } from "@/lib/mdx";
 import { requireOwner } from "@/lib/write/session";
-import { WriteError, commitChanges, createImageBlob, type CommitChange } from "@/lib/write/github";
+import { WriteError, commitChanges, createImageBlob, deletePost, type CommitChange } from "@/lib/write/github";
 import { IMAGES_DIR, SLUG_PATTERN, postPath, serializePost, type PostFields } from "@/lib/write/post";
 
 const AUTH_MESSAGE = "로그인이 끝났어요. 내용은 이 기기에 보관돼 있으니 다시 로그인한 뒤 저장해 주세요.";
@@ -116,5 +116,39 @@ export async function saveAction(input: SaveInput): Promise<SaveResult> {
       return { ok: false, reason: "slug", error: "같은 주소의 글이 이미 있어요. 주소를 바꿔 주세요." };
     }
     return { ok: false, error: error instanceof Error ? error.message : "저장하지 못했어요." };
+  }
+}
+
+export type DeleteResult =
+  | { ok: true; commitUrl: string; deleted: string[] }
+  | { ok: false; error: string; reason?: "conflict" | "auth" };
+
+// 글과 그 글의 사진을 저장소에서 지운다. 편집을 시작할 때 읽은 sha와 다르면 멈춘다.
+export async function deleteAction(input: { path: string; sha: string; title: string }): Promise<DeleteResult> {
+  let token: string;
+  try {
+    ({ token } = await requireOwner());
+  } catch {
+    return { ok: false, reason: "auth", error: AUTH_MESSAGE };
+  }
+
+  const slug = input.path.split("/").pop()?.replace(/\.mdx$/, "") ?? "";
+  const valid = SLUG_PATTERN.test(slug) && (input.path === postPath(slug, false) || input.path === postPath(slug, true));
+  if (!valid || !input.sha) return { ok: false, error: "지울 글을 찾지 못했어요." };
+
+  const message = `docs: ${input.title.trim() || slug} 삭제\n\n/write 편집기에서 삭제`;
+  try {
+    const result = await deletePost(token, input.path, input.sha, message);
+    return { ok: true, ...result };
+  } catch (error) {
+    if (error instanceof WriteError && error.message === "AUTH") return { ok: false, reason: "auth", error: AUTH_MESSAGE };
+    if (error instanceof WriteError && error.message === "CONFLICT") {
+      return {
+        ok: false,
+        reason: "conflict",
+        error: "이 글을 연 뒤 저장소에서 글이 바뀌었거나 이미 지워졌어요. 지우지 않고 멈췄어요. 최신 내용을 불러온 뒤 다시 확인해 주세요.",
+      };
+    }
+    return { ok: false, error: error instanceof Error ? error.message : "삭제하지 못했어요." };
   }
 }

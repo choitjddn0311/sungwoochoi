@@ -1,6 +1,6 @@
 import matter from "gray-matter";
 import { writeConfig } from "@/lib/write/session";
-import { DRAFTS_DIR, POSTS_DIR, type PostFields } from "@/lib/write/post";
+import { DRAFTS_DIR, IMAGES_DIR, POSTS_DIR, type PostFields } from "@/lib/write/post";
 
 // GitHub REST API를 직접 호출한다. 글 하나를 저장할 때 커밋 하나만 만든다.
 
@@ -47,11 +47,18 @@ async function headCommit(gh: Fetcher) {
   return { commitSha: ref.object.sha, treeSha: commit.tree.sha };
 }
 
-async function postFiles(gh: Fetcher, treeSha: string) {
-  const tree = await gh<{ tree: TreeItem[] }>(`/git/trees/${treeSha}?recursive=1`);
+async function repoTree(gh: Fetcher, treeSha: string) {
+  return (await gh<{ tree: TreeItem[] }>(`/git/trees/${treeSha}?recursive=1`)).tree;
+}
+
+function onlyPosts(items: TreeItem[]) {
   const isPost = (item: TreeItem, dir: string) =>
     item.type === "blob" && item.path.startsWith(`${dir}/`) && item.path.endsWith(".mdx") && !item.path.slice(dir.length + 1).includes("/");
-  return tree.tree.filter((item) => isPost(item, POSTS_DIR) || isPost(item, DRAFTS_DIR));
+  return items.filter((item) => isPost(item, POSTS_DIR) || isPost(item, DRAFTS_DIR));
+}
+
+async function postFiles(gh: Fetcher, treeSha: string) {
+  return onlyPosts(await repoTree(gh, treeSha));
 }
 
 async function readBlob(gh: Fetcher, sha: string) {
@@ -150,13 +157,22 @@ export async function commitChanges(token: string, message: string, changes: Com
     }),
   );
 
+  const { commitUrl, treeSha: newTreeSha, commitSha: newCommitSha } = await writeCommit(gh, commitSha, treeSha, tree, message);
+  const saved = (await repoTree(gh, newTreeSha)).find((item) => item.path === guard.targetPath);
+  return { commitSha: newCommitSha, commitUrl, savedSha: saved?.sha ?? null };
+}
+
+type TreeEntry = { path: string; mode: string; type: string; sha: string | null };
+
+// 트리를 만들고 커밋한 뒤 브랜치를 앞으로 감는다. 그 사이 다른 커밋이 올라왔으면 CONFLICT.
+async function writeCommit(gh: Fetcher, parentSha: string, baseTreeSha: string, tree: TreeEntry[], message: string) {
   const newTree = await gh<{ sha: string }>("/git/trees", {
     method: "POST",
-    body: JSON.stringify({ base_tree: treeSha, tree }),
+    body: JSON.stringify({ base_tree: baseTreeSha, tree }),
   });
   const commit = await gh<{ sha: string; html_url: string }>("/git/commits", {
     method: "POST",
-    body: JSON.stringify({ message, tree: newTree.sha, parents: [commitSha] }),
+    body: JSON.stringify({ message, tree: newTree.sha, parents: [parentSha] }),
   });
 
   try {
@@ -165,12 +181,30 @@ export async function commitChanges(token: string, message: string, changes: Com
       body: JSON.stringify({ sha: commit.sha, force: false }),
     });
   } catch (error) {
-    // 그 사이에 다른 커밋이 올라와 앞으로 감기가 안 되는 경우
     if ((error as { status?: number }).status === 422) throw new WriteError("CONFLICT");
     throw error;
   }
+  return { commitSha: commit.sha, commitUrl: commit.html_url, treeSha: newTree.sha };
+}
 
-  const blobs = await gh<{ tree: TreeItem[] }>(`/git/trees/${newTree.sha}?recursive=1`);
-  const saved = blobs.tree.find((item) => item.path === guard.targetPath);
-  return { commitSha: commit.sha, commitUrl: commit.html_url, savedSha: saved?.sha ?? null };
+// 글 파일과 그 글의 사진 폴더(public/img/posts/<slug>/)를 커밋 하나로 지운다.
+// 같은 주소의 글이 임시저장과 발행 양쪽에 있으면 사진은 다른 쪽이 쓰고 있으니 남긴다.
+export async function deletePost(token: string, path: string, sha: string, message: string) {
+  const gh = client(token);
+  const { commitSha, treeSha } = await headCommit(gh);
+  const items = await repoTree(gh, treeSha);
+  const posts = onlyPosts(items);
+
+  const target = posts.find((item) => item.path === path);
+  if (!target || target.sha !== sha) throw new WriteError("CONFLICT");
+
+  const slug = path.split("/").pop()!.replace(/\.mdx$/, "");
+  const sharedSlug = posts.some((item) => item.path !== path && item.path.endsWith(`/${slug}.mdx`));
+  const images = sharedSlug
+    ? []
+    : items.filter((item) => item.type === "blob" && item.path.startsWith(`${IMAGES_DIR}/${slug}/`)).map((item) => item.path);
+
+  const tree = [path, ...images].map((file) => ({ path: file, mode: "100644", type: "blob", sha: null }));
+  const { commitUrl } = await writeCommit(gh, commitSha, treeSha, tree, message);
+  return { commitUrl, deleted: [path, ...images] };
 }

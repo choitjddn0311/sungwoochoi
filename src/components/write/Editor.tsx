@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import { useHydrated } from "@/lib/useHydrated";
-import { previewAction, saveAction, uploadImageAction, type SaveResult } from "@/app/[locale]/write/actions";
+import {
+  deleteAction,
+  previewAction,
+  saveAction,
+  uploadImageAction,
+  type DeleteResult,
+  type SaveResult,
+} from "@/app/[locale]/write/actions";
 import {
   SLUG_PATTERN,
   imagePublicPath,
@@ -124,6 +131,10 @@ export default function Editor({ initial }: { initial: EditorInitial }) {
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState<SaveResult | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // 삭제: 확인 → 지우는 중 → 결과
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState<DeleteResult | null>(null);
 
   const textRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -332,6 +343,18 @@ export default function Editor({ initial }: { initial: EditorInitial }) {
       setOriginal({ path: response.path, sha: response.sha });
       setImages((list) => list.filter((image) => !body.includes(imagePublicPath(slug, image.filename))));
     }
+  };
+
+  const originalSlug = original.path?.split("/").pop()?.replace(/\.mdx$/, "") ?? "";
+
+  const remove = async () => {
+    if (!original.path || !original.sha) return;
+    setDeleting(true);
+    const response = await deleteAction({ path: original.path, sha: original.sha, title });
+    setDeleting(false);
+    setDeleteOpen(false);
+    setDeleted(response);
+    if (response.ok) writeStore(storeKey, null);
   };
 
   const problemList = confirm ? problems(confirm) : [];
@@ -556,6 +579,15 @@ export default function Editor({ initial }: { initial: EditorInitial }) {
         <div className="wrap flex flex-wrap items-center justify-between gap-3 py-2.5">
           <span className="meta hidden text-muted md:inline">저장하면 GitHub에 커밋 하나가 올라가고 1~2분 뒤 사이트에 반영돼요.</span>
           <div className="ml-auto flex w-full gap-2 md:w-auto">
+            {original.path && (
+              <button
+                type="button"
+                onClick={() => setDeleteOpen(true)}
+                className="tap px-3 text-[15px] text-muted transition-colors hover:text-foreground"
+              >
+                삭제
+              </button>
+            )}
             <button
               type="button"
               aria-label="사진 넣기"
@@ -575,6 +607,72 @@ export default function Editor({ initial }: { initial: EditorInitial }) {
           </div>
         </div>
       </div>
+
+      {/* 삭제 확인과 결과 */}
+      {(deleteOpen || deleted) && (
+        <div className="fixed inset-0 z-40 grid place-items-center bg-background/80 p-4" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
+          <div className="w-full max-w-[520px] border border-line bg-background p-6">
+            {deleteOpen && (
+              <>
+                <p className="meta text-muted">삭제</p>
+                <h2 id="delete-dialog-title" className="mt-2 font-kr text-[22px] font-normal">
+                  이 글을 삭제할까요?
+                </h2>
+                <div className="mt-4 grid gap-1 overflow-x-auto bg-surface p-3 font-mono text-[12.5px]">
+                  <span className="text-muted line-through">− {original.path}</span>
+                  <span className="text-muted line-through">− public/img/posts/{originalSlug}/ (사진 폴더 전체)</span>
+                </div>
+                <p className="meta mt-3 text-muted">
+                  {isPublished ? "공개된 글이 1~2분 뒤 사이트에서 사라져요. " : ""}커밋 하나로 지우고, 필요하면 GitHub 기록에서 되살릴 수 있어요.
+                </p>
+                <div className="mt-6 flex justify-end gap-2">
+                  <button className="tap border border-line px-5" onClick={() => setDeleteOpen(false)} disabled={deleting}>
+                    취소
+                  </button>
+                  <button className="tap bg-foreground px-6 text-background disabled:opacity-60" onClick={remove} disabled={deleting}>
+                    {deleting ? "지우는 중…" : "삭제"}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {!deleteOpen && deleted && (
+              <>
+                <p className="meta text-muted">{deleted.ok ? "삭제" : "삭제하지 못했어요"}</p>
+                <h2 id="delete-dialog-title" className="mt-2 font-kr text-[22px] font-normal">
+                  {deleted.ok ? "글을 삭제했어요" : deleted.reason === "conflict" ? "저장소가 다른 곳에서 바뀌었어요" : "삭제하지 못했어요"}
+                </h2>
+                <p className="mt-3 text-[15px] text-muted">
+                  {deleted.ok ? `파일 ${deleted.deleted.length}개를 지웠어요. 사이트에는 1~2분 뒤 반영돼요.` : deleted.error}
+                </p>
+                {deleted.ok && (
+                  <a href={deleted.commitUrl} target="_blank" rel="noreferrer" className="meta mt-4 inline-block text-muted underline underline-offset-4">
+                    GitHub 커밋 보기
+                  </a>
+                )}
+                <div className="mt-6 flex justify-end gap-2">
+                  {deleted.ok ? (
+                    <Link href="/write" className="tap bg-foreground px-6 text-background">
+                      목록으로
+                    </Link>
+                  ) : (
+                    <>
+                      {deleted.reason === "conflict" && (
+                        <button className="tap border border-line px-5" onClick={() => window.location.reload()}>
+                          최신 내용 불러오기
+                        </button>
+                      )}
+                      <button className="tap bg-foreground px-6 text-background" onClick={() => setDeleted(null)}>
+                        닫기
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 저장 확인과 결과 */}
       {(confirm || result) && (
