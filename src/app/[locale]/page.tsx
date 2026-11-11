@@ -7,7 +7,7 @@ import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
 import PostRow from "@/components/posts/PostRow";
 import { getAllPosts } from "@/lib/posts";
-import { getVideoThumbnail, localizeProject, padCount, photos, projects, videos } from "@/lib/work";
+import { getVideoThumbnail, localizeProject, padCount, photoRatio, photos, projects, videos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -43,7 +43,7 @@ const Home = async ({ params }: PageProps) => {
       key: `photo-${photo.src}`,
       title: photo.title ?? "",
       href: "/work/photo",
-      image: { src: photo.src, alt: photo.alt, position: photo.position },
+      image: { src: photo.src, alt: photo.alt, ratio: photoRatio(photo) },
     })),
     projects.map((item) => localizeProject(item, locale, w("inProgress"))).map((project) => ({
       key: `project-${project.title}`,
