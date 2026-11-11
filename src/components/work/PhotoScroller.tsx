@@ -16,7 +16,7 @@ interface PhotoScrollerProps {
 const PhotoScroller = ({ photos, label }: PhotoScrollerProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -28,7 +28,11 @@ const PhotoScroller = ({ photos, label }: PhotoScrollerProps) => {
       if (!section || !stage) return;
       const distance = section.offsetHeight - stage.offsetHeight;
       const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / Math.max(1, distance)));
-      if (barRef.current) barRef.current.style.transform = `scaleX(${progress})`;
+      // 사진마다 한 칸. 본 칸은 가득, 지금 칸은 스크롤한 만큼 채운다.
+      barRef.current?.querySelectorAll("i").forEach((fill, index) => {
+        const amount = Math.min(1, Math.max(0, progress * photos.length - index));
+        fill.style.transform = `scaleX(${amount})`;
+      });
       setActive(Math.min(photos.length - 1, Math.floor(progress * photos.length)));
     };
     const onScroll = () => {
@@ -104,9 +108,14 @@ const PhotoScroller = ({ photos, label }: PhotoScrollerProps) => {
               );
             })}
           </div>
-          <div className="photo-progress" aria-hidden="true">
-            <i ref={barRef} />
-          </div>
+        </div>
+
+        <div ref={barRef} className="photo-progress" aria-hidden="true">
+          {photos.map((photo) => (
+            <span key={photo.src}>
+              <i />
+            </span>
+          ))}
         </div>
       </div>
     </section>

@@ -512,6 +512,7 @@ select:focus {
     height: calc(100svh - var(--header-h));
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr) auto;
     column-gap: clamp(10px, calc(var(--u) * 1.6), 30px);
     align-items: center;
     padding-inline: var(--gut);
@@ -614,9 +615,20 @@ select:focus {
     letter-spacing: -0.02em;
   }
 
+  /* 진행 표시: 무대 맨 아래 전체 폭, 사진 수만큼 칸을 나눈 선. 사진이 바뀌어도 제자리에 있다. */
   .photo-progress {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 6px;
+    padding-bottom: clamp(16px, calc(var(--u) * 2.4), 40px);
+  }
+
+  .photo-progress span {
     position: relative;
+    flex: 1;
     height: 1px;
+    overflow: hidden;
     background: var(--line);
   }
 
@@ -728,7 +740,7 @@ select:focus {
   .photo-stage,
   .photo-stage[data-flip="true"] {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto auto;
     align-items: stretch;
     row-gap: 16px;
     padding-block: 12px 20px;
@@ -750,6 +762,11 @@ select:focus {
 
   .photo-count {
     font-size: 32px;
+  }
+
+  .photo-progress {
+    grid-row: 3;
+    padding-bottom: 4px;
   }
 
   .film-item,
