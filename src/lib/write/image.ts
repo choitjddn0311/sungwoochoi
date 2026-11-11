@@ -86,13 +86,24 @@ function parseTiff(view: DataView, start: number): PhotoExif {
   const exifAt = ifd0.get(0x8769);
   const exif = typeof exifAt === "number" ? readIfd(exifAt) : new Map<number, string | number>();
 
-  const make = String(ifd0.get(0x010f) ?? "");
-  const model = String(ifd0.get(0x0110) ?? "");
-  // 모델 이름에 제조사가 이미 들어 있으면(예: "Canon EOS R6") 한 번만 쓴다.
-  const camera = model.toLowerCase().startsWith(make.toLowerCase().split(" ")[0]) ? model : [make, model].filter(Boolean).join(" ");
+  const camera = cameraName(String(ifd0.get(0x010f) ?? ""), String(ifd0.get(0x0110) ?? ""));
   const lens = String(exif.get(0xa434) ?? "");
   const taken = String(exif.get(0x9003) ?? "");
   const date = /^\d{4}:\d{2}:\d{2}/.test(taken) ? taken.slice(0, 10).replaceAll(":", "-") : "";
 
   return { ...(camera && { camera }), ...(lens && { lens }), ...(date && { date }) };
+}
+
+/**
+ * EXIF의 제조사·모델을 사람이 부르는 이름으로 바꾼다.
+ * 소니는 모델 번호(ILCE-7M2)를 쓰므로 "Sony A7M2"처럼, 대문자 제조사는 "Nikon"처럼 고친다.
+ */
+export function cameraName(make: string, model: string): string {
+  const brand = make.trim().split(/\s+/)[0] ?? "";
+  const nice = brand ? brand[0].toUpperCase() + brand.slice(1).toLowerCase() : "";
+  let name = model.trim();
+  if (/^sony$/i.test(brand)) name = name.replace(/^ILCE-/i, "A").replace(/^DSC-/i, "");
+  // 모델 이름에 제조사가 이미 들어 있으면(예: "Canon EOS R6") 한 번만 쓴다.
+  if (nice && name.toLowerCase().startsWith(nice.toLowerCase())) name = name.slice(nice.length).trim();
+  return [nice, name].filter(Boolean).join(" ");
 }
