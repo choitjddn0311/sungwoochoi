@@ -39,6 +39,9 @@ type PhotoDraft = { index: number | null; upload: Upload | null; photo: Photo };
 type VideoDraft = { index: number | null; url: string; video: Video; loading?: boolean };
 type ReelDraft = { index: number | null; url: string; upload: Upload | null; video: Video };
 
+/** 투명한 1×1 GIF */
+const BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
 const inputClass =
   "min-w-0 w-full border-b border-line bg-transparent py-2 text-[16px] outline-none placeholder:text-muted focus:border-foreground";
 
@@ -214,10 +217,12 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     const id = parseYoutubeId(url);
     if (!id) {
       setFormError(url.trim() ? "유튜브 영상 주소를 넣어 주세요. 예: https://youtu.be/…" : null);
+      // 주소가 틀리거나 비면 이전 영상을 지운다. 그대로 두면 옛 썸네일이 보이고 옛 영상이 저장된다.
+      setVideoDraft((draft) => draft && { ...draft, video: { ...draft.video, id: "" } });
       return;
     }
     setFormError(null);
-    setVideoDraft((draft) => draft && { ...draft, loading: true, video: { ...draft.video, id, vertical: url.includes("/shorts/") || draft.video.vertical } });
+    setVideoDraft((draft) => draft && { ...draft, loading: true, video: { ...draft.video, id, vertical: id === draft.video.id ? draft.video.vertical : url.includes("/shorts/") } });
     const info = await youtubeInfoAction(url);
     setVideoDraft((draft) => draft && { ...draft, loading: false, video: { ...draft.video, title: draft.video.title || info?.title || "" } });
   };
@@ -229,7 +234,7 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     const problem = checkVideo(video);
     if (problem) return setFormError(problem);
     const { index } = videoDraft;
-    if (films.some((item, i) => i !== index && item.id === video.id && !!item.vertical === !!video.vertical)) return setFormError("이미 목록에 있는 영상이에요.");
+    if (films.some((item, i) => i !== index && item.id === video.id)) return setFormError("이미 목록에 있는 영상이에요.");
     setFilms((list) => (index === null ? [...list, video] : list.map((item, i) => (i === index ? video : item))));
     closeForms();
   };
@@ -328,6 +333,11 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     </div>
   );
 
+  // 저장했지만 아직 배포되지 않은 파일처럼 그림을 못 읽으면 깨진 아이콘 대신 회색 칸을 보인다.
+  const blankOnError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (e.currentTarget.src !== BLANK_IMAGE) e.currentTarget.src = BLANK_IMAGE;
+  };
+
   const thumb = (src: string | null, ratio: number) => (
     <span className="grid h-[56px] w-[56px] place-items-center sm:h-[72px] sm:w-[72px]">
       {src ? (
@@ -336,8 +346,9 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
         <img
           src={src}
           alt=""
-          className={`object-cover grayscale ${ratio < 1 ? "h-full w-auto" : "h-auto w-full"}`}
+          className={`bg-surface object-cover grayscale ${ratio < 1 ? "h-full w-auto" : "h-auto w-full"}`}
           style={{ aspectRatio: String(ratio) }}
+          onError={blankOnError}
         />
       ) : (
         <span className="block h-full w-full bg-surface" />
@@ -475,10 +486,18 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
           {videoDraft && (
             <section aria-label="영상" className="grid gap-8 border-y border-line py-6 md:grid-cols-[5fr_7fr]">
               <div className="grid content-start gap-3">
-                <div className={`grid place-items-center bg-surface ${videoDraft.video.vertical ? "mx-auto aspect-[9/16] w-[60%]" : "aspect-video"}`}>
-                  {videoDraft.video.id ? (
+                {/* 유튜브 썸네일은 위아래 검은 띠가 있는 4:3 그림이다. 칸 비율을 고정하고 그림을 칸에 맞춰 잘라야 띠와 칸 늘어남이 없다. */}
+                <div
+                  className={`relative grid place-items-center overflow-hidden bg-surface ${videoDraft.video.vertical ? "mx-auto aspect-[9/16] w-[60%]" : "aspect-video w-full"}`}
+                >
+                  {videoDraft.video.id && getVideoThumbnail(videoDraft.video) ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={getVideoThumbnail(videoDraft.video) ?? ""} alt="" className="h-full w-full object-cover" />
+                    <img
+                      src={getVideoThumbnail(videoDraft.video)!}
+                      alt=""
+                      className="absolute inset-0 h-full w-full object-cover"
+                      onError={blankOnError}
+                    />
                   ) : (
                     <span className="meta text-muted">유튜브 썸네일 자동</span>
                   )}
@@ -529,14 +548,23 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
           {reelDraft && (
             <section aria-label="릴스" className="grid gap-8 border-y border-line py-6 md:grid-cols-[5fr_7fr]">
               <div className="grid content-start gap-3">
-                <label className="mx-auto grid aspect-[9/16] w-[60%] cursor-pointer place-items-center overflow-hidden border border-dashed border-muted text-center">
+                <label className="relative mx-auto grid aspect-[9/16] w-[60%] cursor-pointer place-items-center overflow-hidden border border-dashed border-muted text-center">
                   {reelDraft.upload || reelDraft.video.thumbnail ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={reelDraft.upload?.url ?? previewOf(reelDraft.video.thumbnail!)} alt="" className="h-full w-full object-cover" />
+                    <img
+                      src={reelDraft.upload?.url ?? previewOf(reelDraft.video.thumbnail!)}
+                      alt=""
+                      className="absolute inset-0 h-full w-full bg-surface object-cover"
+                      onError={blankOnError}
+                    />
                   ) : (
                     <span className="p-4 text-[15px]">썸네일 고르기</span>
                   )}
-                  <input type="file" accept="image/*" className="sr-only" onChange={(e) => pickReelThumb(e.target.files?.[0])} />
+                  <input type="file" accept="image/*" className="sr-only" onChange={(e) => {
+                      pickReelThumb(e.target.files?.[0]);
+                      // 같은 파일을 다시 골라도(올리기 실패 뒤 재시도) 다시 읽게 비운다.
+                      e.target.value = "";
+                    }} />
                 </label>
                 <p className="meta text-muted">
                   인스타그램은 썸네일을 가져올 수 없어 직접 골라요(화면 캡처나 표지 사진). 눌러서 바꿀 수 있어요.
