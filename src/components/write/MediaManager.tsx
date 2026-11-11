@@ -339,14 +339,15 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
   };
 
   const thumb = (src: string | null, ratio: number) => (
-    <span className="grid h-[56px] w-[56px] place-items-center sm:h-[72px] sm:w-[72px]">
+    // 그림을 칸 크기 계산에서 빼야(absolute) 세로로 긴 사진이 칸을 늘려 밖으로 넘치지 않는다.
+    <span className="relative block h-[56px] w-[56px] shrink-0 overflow-hidden sm:h-[72px] sm:w-[72px]">
       {src ? (
         // 저장 전 사진은 브라우저 안의 임시 주소라 next/image를 쓰지 않는다.
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src}
           alt=""
-          className={`bg-surface object-cover grayscale ${ratio < 1 ? "h-full w-auto" : "h-auto w-full"}`}
+          className={`absolute inset-0 m-auto bg-surface object-cover grayscale ${ratio < 1 ? "h-full w-auto" : "h-auto w-full"}`}
           style={{ aspectRatio: String(ratio) }}
           onError={blankOnError}
         />
