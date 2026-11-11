@@ -283,7 +283,7 @@ select:focus {
     /* 고르지 않은 프레임의 폭. 비율이 있는 사진 칸은 이 폭의 3:4 높이에 맞춘다. */
     --frame-w: clamp(140px, calc(var(--u) * 15), 288px);
     /* 고른 가로 사진이 화면 밖으로 넘지 않게 하는 최대 폭 */
-    --frame-max: min(1100px, calc(100vw - var(--gut) * 2));
+    --frame-max: min(900px, calc(100vw - var(--gut) * 2));
     height: calc(var(--frame-selected) * 4 / 3);
     display: flex;
     align-items: center;
@@ -386,7 +386,7 @@ select:focus {
   }
 
   .strip-large {
-    --frame-selected: clamp(230px, calc(var(--u) * 38), 730px);
+    --frame-selected: clamp(230px, calc(var(--u) * 32), 540px);
     --frame-w: clamp(110px, calc(var(--u) * 14), 270px);
   }
 
