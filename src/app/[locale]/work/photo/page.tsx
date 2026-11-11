@@ -30,8 +30,7 @@ const Photo = async ({ params }: PageProps) => {
         </div>
       ) : (
         <>
-          <PhotoScroller photos={photos} label={t("photoListLabel")} />
-          <div className="wrap flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-line pt-4">
+          <div className="wrap flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 pt-4">
             <p className="meta text-muted">{t("photoAccount")}</p>
             <a
               href={siteConfig.social.photoInstagram}
@@ -42,6 +41,7 @@ const Photo = async ({ params }: PageProps) => {
               @chooi.film ↗
             </a>
           </div>
+          <PhotoScroller photos={photos} label={t("photoListLabel")} />
           <div className="gap-l" />
         </>
       )}
