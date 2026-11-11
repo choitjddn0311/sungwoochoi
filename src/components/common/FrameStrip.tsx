@@ -14,11 +14,9 @@ interface FrameStripProps {
   label: string;
   /** 처음 선택할 프레임 순서 */
   initial?: number;
-  /** 선택한 프레임을 더 크게 보여 주는 사진용 띠 */
-  large?: boolean;
 }
 
-const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProps) => {
+const FrameStrip = ({ items, label, initial = 0 }: FrameStripProps) => {
   const t = useTranslations("strip");
   const [selected, setSelected] = useState(initial);
   const stripRef = useRef<HTMLDivElement>(null);
@@ -123,7 +121,7 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
     <div className="flex flex-col gap-3.5">
       <div
         ref={stripRef}
-        className={`strip${large ? " strip-large" : ""}`}
+        className="strip"
         tabIndex={0}
         role="region"
         aria-label={label}
@@ -135,7 +133,7 @@ const FrameStrip = ({ items, label, initial = 0, large = false }: FrameStripProp
             key={item.key}
             item={item}
             selected={index === selected}
-            sizes={large ? "(max-width: 680px) 90vw, 60vw" : "(max-width: 680px) 80vw, 40vw"}
+            sizes="(max-width: 680px) 80vw, 40vw"
             onSelect={() => moveTo(index)}
             onFocus={() => setSelected(index)}
           />

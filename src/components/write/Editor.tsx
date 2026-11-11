@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import { useHydrated } from "@/lib/useHydrated";
+import { shrinkImage, toBase64 } from "@/lib/write/image";
 import {
   deleteAction,
   previewAction,
@@ -62,31 +63,6 @@ function writeStore(key: string, value: Saved | null) {
   } catch {
     // 저장소를 쓸 수 없는 브라우저에서는 자동 보관만 건너뛴다.
   }
-}
-
-// 긴 변 2000px, JPEG 85%로 줄인다. GIF는 움직임을 지키기 위해 그대로 둔다.
-async function shrinkImage(file: File): Promise<{ blob: Blob; ext: string }> {
-  if (file.type === "image/gif") return { blob: file, ext: "gif" };
-  const bitmap = await createImageBitmap(file);
-  const scale = Math.min(1, 2000 / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bitmap.width * scale);
-  canvas.height = Math.round(bitmap.height * scale);
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-  const blob = await new Promise<Blob>((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("사진을 변환하지 못했어요."))), "image/jpeg", 0.85),
-  );
-  return { blob, ext: "jpg" };
-}
-
-function toBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result).split(",")[1] ?? "");
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(blob);
-  });
 }
 
 function baseName(name: string) {
@@ -277,7 +253,7 @@ export default function Editor({ initial }: { initial: EditorInitial }) {
     const taken = new Set(images.map((image) => image.filename));
     for (const file of pictures) {
       try {
-        const { blob, ext } = await shrinkImage(file);
+        const { blob, ext } = await shrinkImage(file, 2000);
         let filename = `${baseName(file.name)}.${ext}`;
         for (let n = 2; taken.has(filename); n++) filename = `${baseName(file.name)}-${n}.${ext}`;
         taken.add(filename);
@@ -305,7 +281,7 @@ export default function Editor({ initial }: { initial: EditorInitial }) {
   const problems = (mode: Mode): string[] => {
     const list: string[] = [];
     if (!title.trim()) list.push("제목을 입력해 주세요.");
-    if (!SLUG_PATTERN.test(slug) || slug === "new") list.push("주소는 영문 소문자, 숫자, 하이픈(-)으로 정해 주세요. (new는 쓸 수 없어요)");
+    if (!SLUG_PATTERN.test(slug) || slug === "new" || slug === "media") list.push("주소는 영문 소문자, 숫자, 하이픈(-)으로 정해 주세요. (new, media는 쓸 수 없어요)");
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) list.push("날짜는 2026-11-08 형식으로 입력해 주세요.");
     if (mode === "publish" && !summary.trim()) list.push("발행하려면 요약을 입력해 주세요.");
     if (mode === "publish" && previewError) list.push("본문의 MDX 오류를 고쳐 주세요.");

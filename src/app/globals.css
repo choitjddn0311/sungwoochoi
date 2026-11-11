@@ -385,10 +385,6 @@ select:focus {
     filter: none;
   }
 
-  .strip-large {
-    --frame-selected: clamp(230px, calc(var(--u) * 32), 540px);
-    --frame-w: clamp(110px, calc(var(--u) * 14), 270px);
-  }
 
   .round-button {
     width: 44px;
@@ -471,10 +467,6 @@ select:focus {
     --frame-w: 48vw;
   }
 
-  .strip-large {
-    --frame-selected: 78vw;
-    --frame-w: 36vw;
-  }
 }
 
 @layer components {
@@ -671,6 +663,15 @@ select:focus {
     align-self: flex-end;
   }
 
+  /* 세로 영상(쇼츠, 릴스): 9:16 좁은 칸 */
+  .film-item[data-vertical="true"] {
+    width: clamp(240px, calc(var(--u) * 26), 420px);
+  }
+
+  .film-item[data-vertical="true"] .film-box {
+    aspect-ratio: 9 / 16;
+  }
+
   .film-box {
     position: relative;
     display: block;
@@ -772,6 +773,10 @@ select:focus {
   .film-item,
   .film-item:first-child {
     width: 100%;
+  }
+
+  .film-item[data-vertical="true"] {
+    width: 78%;
   }
 }
 

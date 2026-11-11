@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import SectionFooter from "@/components/common/SectionFooter";
 import VideoFrame from "@/components/work/VideoFrame";
-import { videos } from "@/lib/work";
+import { isVerticalVideo, videos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -32,7 +32,7 @@ const Film = async ({ params }: PageProps) => {
           <div className="gap-m" />
           <div className="wrap film-list">
             {videos.map((video) => (
-              <article key={`${video.provider}-${video.id}`} className="film-item">
+              <article key={`${video.provider}-${video.id}`} className="film-item" data-vertical={isVerticalVideo(video)}>
                 <VideoFrame video={video} />
                 <h2 className="film-title">{video.title}</h2>
                 <p className="meta flex flex-wrap gap-x-4 text-muted">

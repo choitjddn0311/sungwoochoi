@@ -164,6 +164,57 @@ export async function commitChanges(token: string, message: string, changes: Com
 
 type TreeEntry = { path: string; mode: string; type: string; sha: string | null };
 
+export type RepoFile = { path: string; sha: string; content: string };
+
+/** 저장소 최신 상태에서 파일들의 내용과 sha, 그리고 폴더 안 파일 목록을 읽는다. */
+export async function readRepoFiles(token: string, paths: string[], dirs: string[] = []) {
+  const gh = client(token);
+  const { treeSha } = await headCommit(gh);
+  const items = await repoTree(gh, treeSha);
+  const files = await Promise.all(
+    paths.map(async (path): Promise<RepoFile | null> => {
+      const item = items.find((entry) => entry.type === "blob" && entry.path === path);
+      return item ? { path, sha: item.sha, content: await readBlob(gh, item.sha) } : null;
+    }),
+  );
+  const listed = items.filter((entry) => entry.type === "blob" && dirs.some((dir) => entry.path.startsWith(`${dir}/`))).map((entry) => entry.path);
+  return { files, listed };
+}
+
+/**
+ * 여러 파일을 커밋 하나로 바꾼다. expected에 적은 파일이 편집을 시작할 때와 달라졌으면 CONFLICT.
+ * (sha가 null이면 그 파일이 아직 없어야 한다)
+ */
+export async function commitRepoChanges(
+  token: string,
+  message: string,
+  changes: CommitChange[],
+  expected: { path: string; sha: string | null }[],
+) {
+  const gh = client(token);
+  const { commitSha, treeSha } = await headCommit(gh);
+  const items = await repoTree(gh, treeSha);
+  for (const { path, sha } of expected) {
+    const now = items.find((entry) => entry.type === "blob" && entry.path === path)?.sha ?? null;
+    if (now !== sha) throw new WriteError("CONFLICT");
+  }
+  const tree = await Promise.all(
+    changes.map(async (change) => {
+      if ("delete" in change) return { path: change.path, mode: "100644", type: "blob", sha: null };
+      if ("blobSha" in change) return { path: change.path, mode: "100644", type: "blob", sha: change.blobSha };
+      const blob = await gh<{ sha: string }>("/git/blobs", {
+        method: "POST",
+        body: JSON.stringify({ content: change.content, encoding: "utf-8" }),
+      });
+      return { path: change.path, mode: "100644", type: "blob", sha: blob.sha };
+    }),
+  );
+  const { commitUrl, treeSha: newTreeSha } = await writeCommit(gh, commitSha, treeSha, tree, message);
+  const after = await repoTree(gh, newTreeSha);
+  const shaOf = (path: string) => after.find((entry) => entry.path === path)?.sha ?? null;
+  return { commitUrl, shaOf };
+}
+
 // 트리를 만들고 커밋한 뒤 브랜치를 앞으로 감는다. 그 사이 다른 커밋이 올라왔으면 CONFLICT.
 async function writeCommit(gh: Fetcher, parentSha: string, baseTreeSha: string, tree: TreeEntry[], message: string) {
   const newTree = await gh<{ sha: string }>("/git/trees", {
