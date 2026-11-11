@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { getVideoEmbedUrl, getVideoThumbnail, type Video } from "@/lib/work";
+import { getVideoEmbedUrl, getVideoLink, getVideoThumbnail, type Video } from "@/lib/work";
 
 /** 처음에는 썸네일만 보여 주고, 누르면 그 자리에서 플레이어를 불러온다. */
 const VideoFrame = ({ video }: { video: Video }) => {
@@ -26,6 +26,24 @@ const VideoFrame = ({ video }: { video: Video }) => {
   }
 
   const thumbnail = getVideoThumbnail(video, hd);
+  const link = getVideoLink(video);
+  const play = (
+    <span className="film-play" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+        <path d="M4 2.5v13l11-6.5z" />
+      </svg>
+    </span>
+  );
+
+  // 릴스는 사이트에서 재생하지 않고 인스타그램에서 연다.
+  if (link) {
+    return (
+      <a href={link} target="_blank" rel="noreferrer" className="film-box" aria-label={t("openInstagram", { title: video.title })}>
+        {thumbnail && <Image src={thumbnail} alt="" fill sizes="(max-width: 680px) 100vw, 30vw" className="object-cover" />}
+        {play}
+      </a>
+    );
+  }
 
   return (
     <button
@@ -44,11 +62,7 @@ const VideoFrame = ({ video }: { video: Video }) => {
           onError={() => setHd(false)}
         />
       )}
-      <span className="film-play" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
-          <path d="M4 2.5v13l11-6.5z" />
-        </svg>
-      </span>
+      {play}
     </button>
   );
 };

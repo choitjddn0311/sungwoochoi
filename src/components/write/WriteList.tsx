@@ -24,6 +24,9 @@ export default function WriteList({ posts, error, authExpired, login }: Props) {
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
         <h1 className="display text-[clamp(56px,calc(var(--u)*9),150px)]">Write</h1>
         <div className="flex items-center gap-3">
+          <Link href="/write/media" className="tap meta px-2 text-muted transition-colors hover:text-foreground">
+            사진·영상 →
+          </Link>
           <form action="/api/write/logout" method="post">
             <button type="submit" className="tap meta px-2 text-muted transition-colors hover:text-foreground">
               로그아웃 · {login}

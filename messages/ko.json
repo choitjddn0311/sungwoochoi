@@ -145,6 +145,7 @@
     "photoListLabel": "사진 모음",
     "photoAccount": "사진은 인스타그램에도 올려요",
     "play": "{title} 재생",
+    "openInstagram": "{title} 인스타그램에서 보기",
     "inProgress": "개발중"
   },
   "strip": {

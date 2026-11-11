@@ -23,15 +23,18 @@ export interface Photo {
 }
 
 export interface Video {
-  provider: "youtube" | "vimeo";
+  /** instagram은 릴스. 사이트에서 재생하지 않고 인스타그램으로 연다. */
+  provider: "youtube" | "vimeo" | "instagram";
   /** 영상 주소에 들어 있는 ID */
   id: string;
   title: string;
   date?: string;
   /** 맡은 역할. 예: 촬영, 편집 */
   role?: string;
-  /** public 폴더 기준 썸네일 경로. Vimeo는 필수, YouTube는 자동 썸네일 대신 쓸 때 지정 */
+  /** public 폴더 기준 썸네일 경로. Vimeo·릴스는 필수, YouTube는 자동 썸네일 대신 쓸 때 지정 */
   thumbnail?: string;
+  /** 세로 영상(쇼츠, 릴스) */
+  vertical?: boolean;
 }
 
 export const photos = photosData as Photo[];
@@ -65,6 +68,13 @@ export const getVideoThumbnail = (video: Video, hd = false): string | null => {
   }
   return null;
 };
+
+/** 세로 영상은 9:16 */
+export const isVerticalVideo = (video: Video) => video.vertical === true || video.provider === "instagram";
+
+/** 릴스는 사이트에서 재생하지 않고 인스타그램 게시물로 연결한다. */
+export const getVideoLink = (video: Video): string | null =>
+  video.provider === "instagram" ? `https://www.instagram.com/reel/${encodeURIComponent(video.id)}/` : null;
 
 export const getVideoEmbedUrl = (video: Video): string => {
   const id = encodeURIComponent(video.id);

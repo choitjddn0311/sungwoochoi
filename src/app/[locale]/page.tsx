@@ -7,7 +7,7 @@ import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
 import PostRow from "@/components/posts/PostRow";
 import { getAllPosts } from "@/lib/posts";
-import { getVideoThumbnail, localizeProject, padCount, photoRatio, photos, projects, videos } from "@/lib/work";
+import { getVideoThumbnail, isVerticalVideo, localizeProject, padCount, photoRatio, photos, projects, videos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -58,7 +58,7 @@ const Home = async ({ params }: PageProps) => {
         title: video.title,
         eyebrow: `${w("film")}${video.date ? ` · ${video.date}` : ""}`,
         href: "/work/film",
-        image: thumbnail ? { src: thumbnail, alt: video.title } : undefined,
+        image: thumbnail ? { src: thumbnail, alt: video.title, ratio: isVerticalVideo(video) ? 9 / 16 : undefined } : undefined,
       };
     }),
     allPosts.slice(0, 3).map((post) => ({
