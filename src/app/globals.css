@@ -641,7 +641,7 @@ select:focus {
     }
   }
 
-  /* 영상: 첫 작품은 전체 폭, 이후에는 좌우로 어긋나게 */
+  /* 영상: 가로 영상은 52% 폭으로 왼쪽·오른쪽 번갈아. 이어진 세로 영상은 한 줄에 3개까지 묶는다. */
   .film-list {
     display: flex;
     flex-direction: column;
@@ -652,20 +652,21 @@ select:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 68%;
+    width: 52%;
   }
 
-  .film-item:first-child {
-    width: 100%;
-  }
-
-  .film-item:nth-child(3n + 3) {
+  .film-list > [data-side="right"] {
     align-self: flex-end;
+  }
+
+  .film-shorts {
+    display: flex;
+    gap: clamp(16px, calc(var(--u) * 2), 32px);
   }
 
   /* 세로 영상(쇼츠, 릴스): 9:16 좁은 칸 */
   .film-item[data-vertical="true"] {
-    width: clamp(240px, calc(var(--u) * 26), 420px);
+    width: clamp(200px, calc(var(--u) * 20.5), 340px);
   }
 
   .film-item[data-vertical="true"] .film-box {
@@ -770,13 +771,19 @@ select:focus {
     padding-bottom: 4px;
   }
 
-  .film-item,
-  .film-item:first-child {
+  .film-item {
     width: 100%;
   }
 
+  /* 휴대폰: 세로 영상은 두 개씩 나란히 */
+  .film-shorts {
+    align-self: stretch;
+    flex-wrap: wrap;
+    gap: 24px 12px;
+  }
+
   .film-item[data-vertical="true"] {
-    width: 78%;
+    width: calc((100% - 12px) / 2);
   }
 }
 
