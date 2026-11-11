@@ -498,28 +498,143 @@ select:focus {
     letter-spacing: -0.03em;
   }
 
-  /* 사진: 한 줄에 한 장, 원래 비율로. 왼쪽과 오른쪽을 번갈아 붙이고 가로 사진은 넓게 */
-  .photo-grid {
+  /* 사진 모음: 섹션이 화면에 고정되고 스크롤하면 사진과 글이 차례로 바뀐다.
+     세로 사진은 왼쪽, 가로 사진(data-flip)은 오른쪽. 글은 반대쪽 빈 공간에 둔다. */
+  .photo-scroller {
+    position: relative;
+    height: calc(var(--n) * 70svh + 100svh);
+  }
+
+  .photo-stage {
+    --header-h: 44px;
+    position: sticky;
+    top: var(--header-h);
+    height: calc(100svh - var(--header-h));
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: clamp(10px, calc(var(--u) * 1.6), 30px);
-    row-gap: clamp(40px, calc(var(--u) * 7), 120px);
+    align-items: center;
+    padding-inline: var(--gut);
+    max-width: 1920px;
+    margin-inline: auto;
   }
 
-  .photo-grid > figure {
-    grid-column: 1 / 6;
+  .photo-frames {
+    position: relative;
+    grid-column: 1 / 9;
+    grid-row: 1;
+    height: 80%;
+    container-type: size;
   }
 
-  .photo-grid > figure[data-orient="landscape"] {
-    grid-column: 1 / 10;
+  .photo-text {
+    grid-column: 9 / 13;
+    grid-row: 1;
+    display: grid;
+    gap: clamp(16px, calc(var(--u) * 2), 32px);
   }
 
-  .photo-grid > figure:nth-child(even) {
-    grid-column: 8 / 13;
+  .photo-stage[data-flip="true"] .photo-frames {
+    grid-column: 5 / 13;
   }
 
-  .photo-grid > figure[data-orient="landscape"]:nth-child(even) {
-    grid-column: 4 / 13;
+  .photo-stage[data-flip="true"] .photo-text {
+    grid-column: 1 / 5;
+  }
+
+  .photo-slide {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+    transition:
+      opacity 600ms ease,
+      transform 700ms cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .photo-slide[data-state="on"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .photo-slide[data-state="past"] {
+    transform: translateY(-24px) scale(0.985);
+  }
+
+  /* 무대 안에서 비율을 지킨 채 가장 크게 */
+  .photo-slide .photo {
+    position: relative;
+    width: min(100cqw, calc(100cqh * var(--ar)));
+    aspect-ratio: var(--ar);
+  }
+
+  .photo-count {
+    font-family: var(--font-latin);
+    font-weight: 300;
+    font-size: clamp(40px, calc(var(--u) * 5), 88px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .photo-caps {
+    display: grid;
+  }
+
+  .photo-cap {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    transform: translateY(12px);
+    visibility: hidden;
+    transition:
+      opacity 450ms ease,
+      transform 500ms ease,
+      visibility 0s 500ms;
+  }
+
+  .photo-cap[data-on="true"] {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    transition:
+      opacity 450ms ease 120ms,
+      transform 500ms ease 120ms;
+  }
+
+  .photo-cap-title {
+    font-family: var(--font-kr);
+    font-weight: 300;
+    font-size: clamp(24px, calc(var(--u) * 2.6), 46px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .photo-progress {
+    position: relative;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .photo-progress i {
+    position: absolute;
+    inset: 0;
+    background: var(--foreground);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo-slide,
+    .photo-slide[data-state="past"],
+    .photo-cap {
+      transform: none;
+      transition: none;
+    }
   }
 
   /* 영상: 첫 작품은 전체 폭, 이후에는 좌우로 어긋나게 */
@@ -606,8 +721,35 @@ select:focus {
 }
 
 @media (max-width: 680px) {
-  .photo-grid > figure:nth-child(n) {
-    grid-column: 1 / -1;
+  .photo-scroller {
+    height: calc(var(--n) * 60svh + 100svh);
+  }
+
+  .photo-stage,
+  .photo-stage[data-flip="true"] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: stretch;
+    row-gap: 16px;
+    padding-block: 12px 20px;
+  }
+
+  .photo-frames,
+  .photo-stage[data-flip="true"] .photo-frames {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+  }
+
+  .photo-text,
+  .photo-stage[data-flip="true"] .photo-text {
+    grid-column: 1;
+    grid-row: 2;
+    gap: 12px;
+  }
+
+  .photo-count {
+    font-size: 32px;
   }
 
   .film-item,

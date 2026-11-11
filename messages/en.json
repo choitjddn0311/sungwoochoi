@@ -142,7 +142,8 @@
     "photoEmpty": "Selecting photos.",
     "filmEmpty": "Preparing films.",
     "emptyHint": "New work will appear here soon.",
-    "photoStripLabel": "Photo frames",
+    "photoListLabel": "Photos",
+    "photoAccount": "More photos on Instagram",
     "play": "Play {title}",
     "inProgress": "In progress"
   },
