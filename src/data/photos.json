@@ -4,18 +4,24 @@
     "alt": "역광 속 길가에 앉아 담배를 든 채 카메라를 바라보는 사람",
     "width": 1600,
     "height": 2400,
-    "title": "해방촌 스냅",
+    "title": "해방촌에서",
+    "series": "스냅",
     "date": "2026-10-22",
-    "place": "해방촌"
+    "place": "해방촌",
+    "camera": "Sony A7M2",
+    "lens": "FE 28-70mm F3.5-5.6 OSS"
   },
   {
     "src": "/img/photos/2026-04-bw-first-roll.jpg",
     "alt": "흐린 하늘을 가로질러 나는 새 한 마리, 흑백 필름",
     "width": 2400,
     "height": 1591,
-    "title": "흑백 첫 롤",
-    "series": "흑백 첫 롤",
-    "date": "2026-04-02"
+    "title": "순간",
+    "series": "흑백필름",
+    "date": "2026-04-02",
+    "place": "반포한강공원",
+    "camera": "Minolta x-700",
+    "lens": "Fomapan 100"
   },
   {
     "src": "/img/photos/2026-03-31-banpo.jpg",
@@ -34,7 +40,10 @@
     "width": 1920,
     "height": 2400,
     "title": "올림픽공원",
+    "series": "풍경",
     "date": "2025-05-04",
-    "place": "올림픽공원"
+    "place": "올림픽공원",
+    "camera": "Canon eos 600d",
+    "lens": "EF-S 18-55mm f/3.5-5.6 IS II"
   }
 ]
