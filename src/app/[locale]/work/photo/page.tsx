@@ -3,7 +3,7 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
-import { photos } from "@/lib/work";
+import { photoRatio, photos } from "@/lib/work";
 import { pageMetadata } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -37,23 +37,33 @@ const Photo = async ({ params }: PageProps) => {
             items={photos.map((photo) => ({
               key: photo.src,
               title: [photo.title, photo.series, photo.date].filter(Boolean).join(" · "),
-              image: { src: photo.src, alt: photo.alt, position: photo.position },
+              image: { src: photo.src, alt: photo.alt, ratio: photoRatio(photo) },
             }))}
           />
           <div className="gap-l" />
           <div className="wrap photo-grid">
-            {photos.map((photo) => (
-              <figure key={photo.src} className="photo">
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(max-width: 680px) 100vw, 42vw"
-                  className="object-cover"
-                  style={photo.position ? { objectPosition: photo.position } : undefined}
-                />
-              </figure>
-            ))}
+            {photos.map((photo) => {
+              const landscape = photoRatio(photo) > 1;
+              const info = [photo.place, photo.camera, photo.lens].filter(Boolean).join(" · ");
+              return (
+                <figure key={photo.src} data-orient={landscape ? "landscape" : "portrait"}>
+                  <div className="photo">
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      width={photo.width}
+                      height={photo.height}
+                      sizes={landscape ? "(max-width: 680px) 100vw, 72vw" : "(max-width: 680px) 100vw, 40vw"}
+                      className="block h-auto w-full"
+                    />
+                  </div>
+                  <figcaption className="meta mt-3 flex flex-col gap-0.5">
+                    <span>{[photo.title, photo.date].filter(Boolean).join(" · ")}</span>
+                    {info && <span className="text-muted">{info}</span>}
+                  </figcaption>
+                </figure>
+              );
+            })}
           </div>
           <div className="gap-l" />
         </>

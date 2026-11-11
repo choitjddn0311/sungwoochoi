@@ -8,7 +8,8 @@ export interface FrameItem {
   eyebrow?: string;
   /** 있으면 링크, 없으면 눌러서 선택하는 버튼이 된다 */
   href?: string;
-  image?: { src: string; alt: string; position?: string };
+  /** ratio(가로/세로)가 있으면 그 비율대로, 없으면 3:4 칸에 채운다 */
+  image?: { src: string; alt: string; position?: string; ratio?: number };
 }
 
 interface FrameProps {
@@ -20,7 +21,9 @@ interface FrameProps {
 }
 
 const Frame = ({ item, selected, sizes, onSelect, onFocus }: FrameProps) => {
-  const className = `frame${item.image ? " frame-image" : ""}`;
+  const ratio = item.image?.ratio;
+  const className = `frame${item.image ? " frame-image" : ""}${ratio ? " frame-ratio" : ""}`;
+  const style = ratio ? ({ "--ar": String(ratio) } as React.CSSProperties) : undefined;
   const content = item.image ? (
     <Image
       src={item.image.src}
@@ -39,14 +42,14 @@ const Frame = ({ item, selected, sizes, onSelect, onFocus }: FrameProps) => {
 
   if (item.href) {
     return (
-      <Link href={item.href} className={className} data-selected={selected} onFocus={onFocus}>
+      <Link href={item.href} className={className} style={style} data-selected={selected} onFocus={onFocus}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button type="button" className={className} data-selected={selected} onClick={onSelect} onFocus={onFocus}>
+    <button type="button" className={className} style={style} data-selected={selected} onClick={onSelect} onFocus={onFocus}>
       {content}
     </button>
   );

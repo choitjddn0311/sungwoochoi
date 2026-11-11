@@ -7,11 +7,17 @@ export interface Photo {
   src: string;
   /** 사진을 설명하는 대체 텍스트 */
   alt: string;
+  /** 올린 파일의 픽셀 크기. 화면에 원래 비율로 보여 줄 때 쓴다. */
+  width: number;
+  height: number;
   title?: string;
   series?: string;
   date?: string;
-  /** 크롭 기준점. CSS object-position 값. 예: "35% 60%" */
-  position?: string;
+  /** 찍은 곳. 예: 해방촌 */
+  place?: string;
+  /** 예: Sony A7 II */
+  camera?: string;
+  lens?: string;
 }
 
 export interface Video {
@@ -27,6 +33,9 @@ export interface Video {
 }
 
 export const photos = photosData as Photo[];
+
+/** 가로/세로 비율. 1보다 크면 가로 사진. */
+export const photoRatio = (photo: Photo) => photo.width / photo.height;
 export const videos = videosData as Video[];
 export const projects = projectsData;
 
