@@ -20,6 +20,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const ROLES = ["developer", "photographer", "videographer"];
 
 /** 사진, 개발, 영상, 글이 번갈아 나오도록 앞에서부터 하나씩 섞는다. */
+/** "2026.05 ~ 2026.06"에서 시작 연월(202605)을 뽑아 최근순 정렬에 쓴다. */
+const projectStart = (period: string) => Number(period.match(/(\d{4})\.(\d{2})/)?.slice(1).join("") ?? 0);
+
 const interleave = (groups: FrameItem[][]) => {
   const result: FrameItem[] = [];
   const longest = Math.max(...groups.map((group) => group.length));
@@ -38,14 +41,16 @@ const Home = async ({ params }: PageProps) => {
   const w = await getTranslations("work");
   const allPosts = getAllPosts();
 
+  // 홈 띠: 사진 4, 영상 2, 프로젝트 3, 글 1을 번갈아. 사진·영상은 /write/media에서 정한 순서, 프로젝트·글은 최근순.
+  const recentProjects = [...projects].sort((a, b) => projectStart(b.period) - projectStart(a.period)).slice(0, 3);
   const frames = interleave([
-    photos.slice(0, 2).map((photo) => ({
+    photos.slice(0, 4).map((photo) => ({
       key: `photo-${photo.src}`,
       title: photo.title ?? "",
       href: "/work/photo",
       image: { src: photo.src, alt: photo.alt, ratio: photoRatio(photo) },
     })),
-    projects.map((item) => localizeProject(item, locale, w("inProgress"))).map((project) => ({
+    recentProjects.map((item) => localizeProject(item, locale, w("inProgress"))).map((project) => ({
       key: `project-${project.title}`,
       title: project.title,
       eyebrow: `${w("dev")} · ${project.period}`,
@@ -58,10 +63,10 @@ const Home = async ({ params }: PageProps) => {
         title: video.title,
         eyebrow: `${w("film")}${video.date ? ` · ${video.date}` : ""}`,
         href: "/work/film",
-        image: thumbnail ? { src: thumbnail, alt: video.title, ratio: isVerticalVideo(video) ? 9 / 16 : undefined } : undefined,
+        image: thumbnail ? { src: thumbnail, alt: video.title, ratio: isVerticalVideo(video) ? 9 / 16 : 16 / 9 } : undefined,
       };
     }),
-    allPosts.slice(0, 3).map((post) => ({
+    allPosts.slice(0, 1).map((post) => ({
       key: `post-${post.slug}`,
       title: post.title,
       eyebrow: `POST · ${post.date}`,
