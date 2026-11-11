@@ -18,6 +18,8 @@ export interface Photo {
   /** 예: Sony A7 II */
   camera?: string;
   lens?: string;
+  /** 인스타그램에 올린 게시물 주소 */
+  instagram?: string;
 }
 
 export interface Video {

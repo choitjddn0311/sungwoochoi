@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import FrameStrip from "@/components/common/FrameStrip";
 import SectionFooter from "@/components/common/SectionFooter";
-import { photoRatio, photos } from "@/lib/work";
+import PhotoScroller from "@/components/work/PhotoScroller";
+import { photos } from "@/lib/work";
+import { siteConfig } from "@/lib/siteConfig";
 import { pageMetadata } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -30,40 +30,17 @@ const Photo = async ({ params }: PageProps) => {
         </div>
       ) : (
         <>
-          <div className="gap-m" />
-          <FrameStrip
-            large
-            label={t("photoStripLabel")}
-            items={photos.map((photo) => ({
-              key: photo.src,
-              title: [photo.title, photo.series, photo.date].filter(Boolean).join(" · "),
-              image: { src: photo.src, alt: photo.alt, ratio: photoRatio(photo) },
-            }))}
-          />
-          <div className="gap-l" />
-          <div className="wrap photo-grid">
-            {photos.map((photo) => {
-              const landscape = photoRatio(photo) > 1;
-              const info = [photo.place, photo.camera, photo.lens].filter(Boolean).join(" · ");
-              return (
-                <figure key={photo.src} data-orient={landscape ? "landscape" : "portrait"}>
-                  <div className="photo">
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt}
-                      width={photo.width}
-                      height={photo.height}
-                      sizes={landscape ? "(max-width: 680px) 100vw, 72vw" : "(max-width: 680px) 100vw, 40vw"}
-                      className="block h-auto w-full"
-                    />
-                  </div>
-                  <figcaption className="meta mt-3 flex flex-col gap-0.5">
-                    <span>{[photo.title, photo.date].filter(Boolean).join(" · ")}</span>
-                    {info && <span className="text-muted">{info}</span>}
-                  </figcaption>
-                </figure>
-              );
-            })}
+          <PhotoScroller photos={photos} label={t("photoListLabel")} />
+          <div className="wrap flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-line pt-4">
+            <p className="meta text-muted">{t("photoAccount")}</p>
+            <a
+              href={siteConfig.social.photoInstagram}
+              target="_blank"
+              rel="noreferrer"
+              className="font-latin text-[clamp(20px,2.2vw,28px)] font-light tracking-[-0.02em] underline-offset-[6px] hover:underline"
+            >
+              @chooi.film ↗
+            </a>
           </div>
           <div className="gap-l" />
         </>

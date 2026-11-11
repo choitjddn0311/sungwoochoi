@@ -7,6 +7,8 @@ export const siteConfig = {
   social: {
     github: "https://github.com/choitjddn0311",
     instagram: "https://www.instagram.com/choitjddn31",
+    /** 사진 작업 계정 */
+    photoInstagram: "https://www.instagram.com/chooi.film",
     email: "choitjddn0311@naver.com",
   },
 };
