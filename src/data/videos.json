@@ -7,11 +7,11 @@
     "role": "컷편집, 자막"
   },
   {
-    "provider": "instagram",
-    "id": "Dfmos_VAMWc",
-    "title": "이 순간이 영원하길 바라며",
+    "provider": "youtube",
+    "id": "Jqg3vmFsQso",
+    "title": "영원을 꿈꾸며",
     "date": "2026-11-11",
-    "role": "편집 및 촬영",
-    "thumbnail": "/img/reels/2026-11-11-tvpup.jpg"
+    "role": "촬영 및 편집",
+    "vertical": true
   }
 ]
