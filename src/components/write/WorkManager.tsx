@@ -5,7 +5,10 @@ import { Link } from "@/i18n/navigation";
 import type { Photo, Video } from "@/lib/work";
 import { getVideoThumbnail } from "@/lib/work";
 import { uploadImageAction } from "@/app/[locale]/write/actions";
-import { saveMediaAction, youtubeInfoAction, type MediaSaveResult } from "@/app/[locale]/write/media/actions";
+import { saveMediaAction, youtubeInfoAction, type MediaSaveResult } from "@/app/[locale]/write/work/actions";
+import { Field, FormFoot, inputClass } from "@/components/write/fields";
+import ProjectForm from "@/components/write/ProjectForm";
+import type { ProjectEntry } from "@/lib/write/projects";
 import { readExif, shrinkImage, toBase64 } from "@/lib/write/image";
 import {
   PHOTO_DIR,
@@ -22,15 +25,16 @@ import {
   publicPath,
 } from "@/lib/write/media";
 
-export type MediaInitial = {
+export type WorkInitial = {
   photos: Photo[];
   videos: Video[];
-  base: { photos: string | null; videos: string | null };
+  projects: ProjectEntry[];
+  base: { photos: string | null; videos: string | null; projects: string | null };
   existing: string[];
 };
 
-type Props = { initial: MediaInitial | null; error: string | null; authExpired: boolean; login: string };
-type Tab = "photo" | "video" | "reel";
+type Props = { initial: WorkInitial | null; error: string | null; authExpired: boolean; login: string };
+type Tab = "project" | "photo" | "video" | "reel";
 
 // 고른 파일: 브라우저에서 줄여 곧바로 blob으로 올려 두고, 저장할 때 커밋에 넣는다.
 type Upload = { url: string; sha: string | null; width: number; height: number; size: number; error?: string };
@@ -38,36 +42,13 @@ type Upload = { url: string; sha: string | null; width: number; height: number; 
 type PhotoDraft = { index: number | null; upload: Upload | null; photo: Photo };
 type VideoDraft = { index: number | null; url: string; video: Video; loading?: boolean };
 type ReelDraft = { index: number | null; url: string; upload: Upload | null; video: Video };
+// 프로젝트 폼: 수정이면 목록 위치, 새로 넣으면 null
+type ProjectDraft = { index: number | null };
 
 /** 투명한 1×1 GIF */
 const BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
-const inputClass =
-  "min-w-0 w-full border-b border-line bg-transparent py-2 text-[16px] outline-none placeholder:text-muted focus:border-foreground";
-
 const emptyPhoto = (): Photo => ({ src: "", alt: "", width: 0, height: 0 });
-
-function Field({
-  id,
-  label,
-  hint,
-  children,
-}: {
-  id: string;
-  label: string;
-  hint?: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <label htmlFor={id} className="grid min-w-0 gap-1">
-      <span className="flex justify-between gap-3">
-        <span className="text-[13.5px]">{label}</span>
-        {hint && <span className="meta text-muted">{hint}</span>}
-      </span>
-      {children}
-    </label>
-  );
-}
 
 function formatKb(bytes: number) {
   return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)}MB` : `${Math.round(bytes / 1024)}KB`;
@@ -83,17 +64,19 @@ async function prepareUpload(file: File, maxSide: number): Promise<{ upload: Upl
   return { upload, finish };
 }
 
-export default function MediaManager({ initial, error, authExpired, login }: Props) {
-  const [base, setBase] = useState(initial?.base ?? { photos: null, videos: null });
+export default function WorkManager({ initial, error, authExpired, login }: Props) {
+  const [base, setBase] = useState(initial?.base ?? { photos: null, videos: null, projects: null });
   const [existing, setExisting] = useState(initial?.existing ?? []);
   const [saved, setSaved] = useState(() => ({
     photos: initial?.photos ?? [],
     films: (initial?.videos ?? []).filter((video) => video.provider !== "instagram"),
     reels: (initial?.videos ?? []).filter((video) => video.provider === "instagram"),
+    projects: initial?.projects ?? [],
   }));
   const [photos, setPhotos] = useState(saved.photos);
   const [films, setFilms] = useState(saved.films);
   const [reels, setReels] = useState(saved.reels);
+  const [projects, setProjects] = useState(saved.projects);
   // 저장소 경로 → 새로 올린 파일
   const [added, setAdded] = useState<Record<string, Upload>>({});
   // 저장한 뒤에도 배포 전까지는 사이트 주소에 파일이 없으므로 미리보기 주소를 남겨 둔다.
@@ -103,6 +86,7 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
   const [photoDraft, setPhotoDraft] = useState<PhotoDraft | null>(null);
   const [videoDraft, setVideoDraft] = useState<VideoDraft | null>(null);
   const [reelDraft, setReelDraft] = useState<ReelDraft | null>(null);
+  const [projectDraft, setProjectDraft] = useState<ProjectDraft | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [exifFilled, setExifFilled] = useState<string[]>([]);
 
@@ -119,8 +103,9 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     count(photos, saved.photos, "사진");
     count(films, saved.films, "영상");
     count(reels, saved.reels, "릴스");
+    count(projects, saved.projects, "프로젝트");
     return list;
-  }, [photos, films, reels, saved]);
+  }, [photos, films, reels, projects, saved]);
   const dirty = changes.length > 0;
 
   useEffect(() => {
@@ -150,6 +135,7 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     setPhotoDraft(null);
     setVideoDraft(null);
     setReelDraft(null);
+    setProjectDraft(null);
     setFormError(null);
     setExifFilled([]);
   };
@@ -158,6 +144,7 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     closeForms();
     if (tab === "photo") setPhotoDraft({ index: null, upload: null, photo: emptyPhoto() });
     if (tab === "video") setVideoDraft({ index: null, url: "", video: { provider: "youtube", id: "", title: "" } });
+    if (tab === "project") setProjectDraft({ index: null });
     if (tab === "reel") setReelDraft({ index: null, url: "", upload: null, video: { provider: "instagram", id: "", title: "" } });
   };
 
@@ -276,11 +263,23 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     closeForms();
   };
 
+  // ---------- 프로젝트 ----------
+  const confirmProject = (project: ProjectEntry) => {
+    if (!projectDraft) return null;
+    const { index } = projectDraft;
+    // 개발 페이지가 이름을 목록 key로 쓰므로 같은 이름은 둘 수 없다.
+    if (projects.some((item, i) => i !== index && item.title === project.title)) return "같은 이름의 프로젝트가 이미 있어요.";
+    setProjects((list) => (index === null ? [...list, project] : list.map((item, i) => (i === index ? project : item))));
+    closeForms();
+    return null;
+  };
+
   // ---------- 저장 ----------
   const revert = () => {
     setPhotos(saved.photos);
     setFilms(saved.films);
     setReels(saved.reels);
+    setProjects(saved.projects);
     setAdded({});
     closeForms();
   };
@@ -290,6 +289,7 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     const response = await saveMediaAction({
       photos,
       videos: [...films, ...reels],
+      projects,
       added: Object.entries(added)
         .filter(([, upload]) => upload.sha)
         .map(([path, upload]) => ({ path, sha: upload.sha! })),
@@ -301,20 +301,22 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
     if (response.ok) {
       setBase(response.base);
       setExisting(response.existing);
-      setSaved({ photos, films, reels });
+      setSaved({ photos, films, reels, projects });
       setPreviews((map) => ({ ...map, ...Object.fromEntries(Object.entries(added).map(([path, upload]) => [publicPath(path), upload.url])) }));
       setAdded({});
     }
   };
 
   // ---------- 화면 ----------
+  // 사이트 /work와 같은 순서(개발 · 사진 · 영상). 처음 열면 가장 자주 쓰는 사진 탭.
   const tabs: { id: Tab; label: string; count: number; add: string }[] = [
+    { id: "project", label: "개발", count: projects.length, add: "프로젝트 추가" },
     { id: "photo", label: "사진", count: photos.length, add: "사진 추가" },
     { id: "video", label: "영상", count: films.length, add: "영상 추가" },
     { id: "reel", label: "릴스", count: reels.length, add: "릴스 추가" },
   ];
   const current = tabs.find((item) => item.id === tab)!;
-  const formOpen = !!(photoDraft || videoDraft || reelDraft);
+  const formOpen = !!(photoDraft || videoDraft || reelDraft || projectDraft);
 
   const rowActions = (onUp: () => void, onDown: () => void, onEdit: () => void, onDelete: () => void, first: boolean, last: boolean) => (
     <div className="flex items-center justify-end">
@@ -360,7 +362,7 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
   return (
     <div className="wrap pb-32 pt-[clamp(24px,5vw,64px)]">
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
-        <h1 className="display text-[clamp(56px,calc(var(--u)*9),150px)]">Media</h1>
+        <h1 className="display text-[clamp(56px,calc(var(--u)*9),150px)]">Work</h1>
         <div className="flex items-center gap-3">
           <Link href="/write" className="tap meta px-2 text-muted transition-colors hover:text-foreground">
             글 쓰기 →
@@ -414,6 +416,16 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
               </button>
             )}
           </div>
+
+          {/* 프로젝트 추가·수정 */}
+          {projectDraft && (
+            <ProjectForm
+              key={projectDraft.index ?? "new"}
+              project={projectDraft.index === null ? null : projects[projectDraft.index]}
+              onCancel={closeForms}
+              onConfirm={confirmProject}
+            />
+          )}
 
           {/* 사진 추가·수정 */}
           {photoDraft && (
@@ -595,6 +607,33 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
 
           {/* 목록 */}
           <ul>
+            {tab === "project" &&
+              projects.map((project, index) => (
+                <li key={project.title} className="grid grid-cols-[minmax(0,1fr)] items-center gap-x-4 gap-y-1 border-b border-line py-3 sm:grid-cols-[28px_minmax(0,1fr)_auto]">
+                  <span className="meta hidden tabular-nums text-muted sm:inline">{String(index + 1).padStart(2, "0")}</span>
+                  <div className="min-w-0">
+                    <p className="font-kr text-[clamp(17px,1.8vw,22px)] font-light">{project.title}</p>
+                    <p className="meta flex flex-wrap gap-x-3 text-muted">
+                      <span>{project.period}</span>
+                      {project.techs.length > 0 && <span>{project.techs.join(" / ")}</span>}
+                      {!project.title_en && <span className="text-foreground">영어 이름 없음</span>}
+                    </p>
+                  </div>
+                  <div>
+                    {rowActions(
+                      () => move(projects, setProjects, index, -1),
+                      () => move(projects, setProjects, index, 1),
+                      () => {
+                        closeForms();
+                        setProjectDraft({ index });
+                      },
+                      () => setProjects(projects.filter((_, i) => i !== index)),
+                      index === 0,
+                      index === projects.length - 1,
+                    )}
+                  </div>
+                </li>
+              ))}
             {tab === "photo" &&
               photos.map((photo, index) => (
                 <li key={photo.src} className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-x-4 gap-y-1 border-b border-line py-3 sm:grid-cols-[28px_72px_minmax(0,1fr)_auto]">
@@ -682,7 +721,9 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
           </ul>
           {current.count === 0 && !formOpen && <p className="py-8 text-[15px] text-muted">아직 없어요. 오른쪽 위 &ldquo;{current.add}&rdquo;로 넣어 주세요.</p>}
           <p className="meta pt-4 text-muted">
-            {tab === "photo"
+            {tab === "project"
+              ? "순서는 개발 페이지에 나오는 순서와 같아요. 홈 띠에는 시작 달이 최근인 3개가 나와요."
+              : tab === "photo"
               ? "순서는 사진 페이지에 나오는 순서와 같아요. 위 두 장은 홈 띠에도 나와요. 목록에서 지운 사진 파일은 저장할 때 함께 지워져요."
               : tab === "video"
                 ? "순서는 영상 페이지에 나오는 순서와 같아요. 릴스는 영상 다음에 나와요."
@@ -743,36 +784,6 @@ export default function MediaManager({ initial, error, authExpired, login }: Pro
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function FormFoot({
-  error,
-  onCancel,
-  onConfirm,
-  confirmLabel,
-}: {
-  error: string | null;
-  onCancel: () => void;
-  onConfirm: () => void;
-  confirmLabel: string;
-}) {
-  return (
-    <div className="grid gap-3 border-t border-line pt-4">
-      {error && (
-        <p role="alert" className="text-[14px]">
-          {error}
-        </p>
-      )}
-      <div className="flex justify-end gap-2">
-        <button type="button" className="tap border border-line px-5 text-[15px]" onClick={onCancel}>
-          취소
-        </button>
-        <button type="button" className="tap bg-foreground px-6 text-[15px] text-background" onClick={onConfirm}>
-          {confirmLabel}
-        </button>
-      </div>
     </div>
   );
 }

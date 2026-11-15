@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/projects", destination: "/work/dev", permanent: true },
       { source: "/en/projects", destination: "/en/work/dev", permanent: true },
+      // 작업물 등록 화면은 /write/media에서 /write/work로 옮겼다(개발 프로젝트도 함께 관리).
+      { source: "/write/media", destination: "/write/work", permanent: false },
     ];
   },
 };

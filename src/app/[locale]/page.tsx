@@ -41,7 +41,7 @@ const Home = async ({ params }: PageProps) => {
   const w = await getTranslations("work");
   const allPosts = getAllPosts();
 
-  // 홈 띠: 사진 4, 영상 2, 프로젝트 3, 글 1을 번갈아. 사진·영상은 /write/media에서 정한 순서, 프로젝트·글은 최근순.
+  // 홈 띠: 사진 4, 영상 2, 프로젝트 3, 글 1을 번갈아. 사진·영상은 /write/work에서 정한 순서, 프로젝트·글은 최근순.
   const recentProjects = [...projects].sort((a, b) => projectStart(b.period) - projectStart(a.period)).slice(0, 3);
   const frames = interleave([
     photos.slice(0, 4).map((photo) => ({

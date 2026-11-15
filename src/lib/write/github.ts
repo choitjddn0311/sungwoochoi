@@ -259,3 +259,29 @@ export async function deletePost(token: string, path: string, sha: string, messa
   const { commitUrl } = await writeCommit(gh, commitSha, treeSha, tree, message);
   return { commitUrl, deleted: [path, ...images] };
 }
+
+export type RepoInfo = { name: string; description: string; createdAt: string; homepage: string; languages: string[] };
+
+/** 다른 저장소의 이름·소개·만든 날·홈페이지·언어(많이 쓴 순)를 읽는다. 프로젝트 등록 "불러오기"용. */
+export async function readRepoInfo(token: string, owner: string, repo: string): Promise<RepoInfo> {
+  const get = async <T>(path: string) => {
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}${path}`, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+    });
+    if (response.status === 401) throw new WriteError("AUTH");
+    if (!response.ok) throw new WriteError(`GitHub 요청 실패 (${response.status})`);
+    return (await response.json()) as T;
+  };
+  const [info, languages] = await Promise.all([
+    get<{ name: string; description: string | null; created_at: string; homepage: string | null }>(""),
+    get<Record<string, number>>("/languages"),
+  ]);
+  return {
+    name: info.name,
+    description: info.description ?? "",
+    createdAt: info.created_at,
+    homepage: info.homepage ?? "",
+    languages: Object.entries(languages).sort((a, b) => b[1] - a[1]).map(([name]) => name).slice(0, 5),
+  };
+}
