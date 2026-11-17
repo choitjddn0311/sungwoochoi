@@ -8,6 +8,8 @@
   --foreground: #000000;
   --muted: #595959;
   --line: #d9d9d9;
+  /* 홈 아래쪽 목록처럼 칸을 또렷하게 나눌 곳에 쓰는 진한 구분선 */
+  --line-strong: #8c8c8c;
   --surface: #f2f2f2;
   /* 글꼴: @fontsource 패키지(layout.tsx에서 불러옴) */
   --ff-latin: "Inter Tight";
@@ -19,6 +21,7 @@
   --foreground: #ffffff;
   --muted: #a3a3a3;
   --line: #2e2e2e;
+  --line-strong: #6b6b6b;
   --surface: #111111;
 }
 
@@ -194,6 +197,11 @@ select:focus {
   }
 
   /* 섹션 끝의 "숫자 + 이름" */
+  /* 이 안의 구분선(border-line)을 진한 선으로 바꾼다. 홈의 10 FRAMES부터 POSTS까지. */
+  .lines-strong {
+    --line: var(--line-strong);
+  }
+
   .section-foot {
     display: flex;
     align-items: baseline;
