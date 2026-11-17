@@ -5,12 +5,11 @@ import Footer from "@/components/layout/footer";
 // Google이 가끔 다른 형식의 주소를 돌려줄 때 빌드가 실패하던 문제가 없다.
 import "@fontsource/inter-tight/latin-300.css";
 import "@fontsource/inter-tight/latin-400.css";
-// 홈 첫 화면 이름(SUNGWOO—CHOI, 최성우)만 600을 쓴다.
+// 홈 첫 화면 영문 이름(SUNGWOO—CHOI)만 600을 쓴다.
 import "@fontsource/inter-tight/latin-600.css";
 import "@fontsource/noto-sans-kr/200.css";
 import "@fontsource/noto-sans-kr/300.css";
 import "@fontsource/noto-sans-kr/400.css";
-import "@fontsource/noto-sans-kr/600.css";
 import Theme from "@/_provider/themeProvider";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

@@ -230,8 +230,8 @@ select:focus {
     z-index: 1;
   }
 
-  .hero h1 .display,
-  .hero h1 .display-kr {
+  /* 영문 이름만 굵게. 한글 최성우는 얇게 두어 대비를 준다. */
+  .hero h1 .display {
     font-weight: 600;
   }
 
