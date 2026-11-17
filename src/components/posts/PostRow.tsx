@@ -14,7 +14,8 @@ const PostRow = ({ post, compact = false }: Props) => (
       <time dateTime={post.date}>{post.date}</time>
       {!compact && <span>{post.summary}</span>}
     </span>
-    <span className="post-title block">{post.title}</span>
+    {/* 홈(compact)에서는 제목을 한 줄로 두고 넘치면 말줄임표로 줄인다. */}
+    <span className={`post-title block ${compact ? "truncate" : ""}`}>{post.title}</span>
   </Link>
 );
 
