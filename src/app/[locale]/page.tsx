@@ -130,7 +130,8 @@ const Home = async ({ params }: PageProps) => {
           <span className="display-kr entry-label">{w("dev")}</span>
           <span className="meta whitespace-nowrap text-muted">{t("projectCount", { count: padCount(projects.length) })}</span>
         </Link>
-        <Link href="/work/photo" className="invert-row flex items-baseline justify-between gap-4 border-t border-line py-[clamp(14px,2vw,26px)]">
+        {/* 마지막 줄은 아래 선도 그어 두 줄이 같은 높이의 칸으로 닫혀 보이게 한다. */}
+        <Link href="/work/photo" className="invert-row flex items-baseline justify-between gap-4 border-y border-line py-[clamp(14px,2vw,26px)]">
           <span className="display-kr entry-label">{t("mediaLabel")}</span>
           <span className="meta whitespace-nowrap text-muted">
             {t("mediaCount", { photos: padCount(photos.length), videos: padCount(videos.length) })}
