@@ -209,6 +209,15 @@ select:focus {
 
   /* 홈 첫 화면: 계단식 이름과 사진 */
   .hero {
+    /* 이름 글자를 여백 안쪽 폭에 맞추려고 100cqw(= 여백 안쪽 폭)를 쓴다. */
+    container-type: inline-size;
+    /*
+     * Inter Tight 600, 자간 -0.045em 기준 잉크 위치(em). 브라우저 canvas measureText로 잼.
+     * --hero-ink: "SUNGWOO—" 잉크 폭, --hero-s: S 앞 빈칸.
+     * 줄표 끝이 오른쪽 사진 끝에, S 왼쪽 끝이 왼쪽 사진 끝에 닿는다. 굵기나 글꼴을 바꾸면 다시 잰다.
+     */
+    --hero-ink: 5.8159;
+    --hero-s: 0.0264;
     position: relative;
     width: 100%;
     max-width: 1920px;
@@ -219,7 +228,11 @@ select:focus {
   .hero h1 {
     position: relative;
     z-index: 1;
-    font-weight: 300;
+  }
+
+  .hero h1 .display,
+  .hero h1 .display-kr {
+    font-weight: 600;
   }
 
   .hero h1 span {
@@ -228,8 +241,12 @@ select:focus {
 
   .hero-l1,
   .hero-l2 {
-    font-size: calc(var(--u) * 15.4);
+    font-size: calc(100cqw / var(--hero-ink));
     white-space: nowrap;
+  }
+
+  .hero-l1 {
+    margin-left: calc(-1em * var(--hero-s));
   }
 
   .hero-l2 {
@@ -423,11 +440,6 @@ select:focus {
     display: flex;
     flex-direction: column;
     gap: 14px;
-  }
-
-  .hero-l1,
-  .hero-l2 {
-    font-size: 15.8vw;
   }
 
   .hero-l2 {
