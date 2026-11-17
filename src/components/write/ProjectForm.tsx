@@ -112,7 +112,7 @@ export default function ProjectForm({ project, onCancel, onConfirm }: Props) {
           {preview.techs.length > 0 && <p className="meta text-muted">{preview.techs.join(" / ")}</p>}
           <p className="meta flex gap-4">
             {preview.github && <span className="underline underline-offset-4">GitHub</span>}
-            {preview.url && <span className="underline underline-offset-4">데모</span>}
+            {preview.url && <span className="underline underline-offset-4">링크</span>}
           </p>
         </div>
         <p className="meta text-muted">영어 이름·설명을 비우면 영어 페이지에도 한국어로 보여요.</p>
