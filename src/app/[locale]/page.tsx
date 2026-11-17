@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return pageMetadata({ locale, page: "home", path: "/" });
 }
 
-const ROLES = ["developer", "photographer", "videographer"];
+const ROLES = ["Developer", "Photographer", "Videographer"];
 
 /** 사진, 개발, 영상, 글이 번갈아 나오도록 앞에서부터 하나씩 섞는다. */
 /** "2026.05 ~ 2026.06"에서 시작 연월(202605)을 뽑아 최근순 정렬에 쓴다. */

@@ -49,7 +49,7 @@ export default function Image() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div style={{ display: "flex", fontSize: "26px", fontWeight: 400 }}>developer / photographer / videographer</div>
+          <div style={{ display: "flex", fontSize: "26px", fontWeight: 400 }}>Developer / Photographer / Videographer</div>
           <div
             style={{
               display: "flex",
